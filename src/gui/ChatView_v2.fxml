@@ -42,12 +42,17 @@
         </HBox>
     </top>
     <left>
-        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="200.0"
-              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-              AnchorPane.topAnchor="0.0">
+       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0"
+              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <ScrollPane fx:id="userListScrollPane" hbarPolicy="NEVER" vbarPolicy="ALWAYS"/>
-
+                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308"
+                            maxWidth="1.7976931348623157E308" pannable="true" prefHeight="496.0" vbarPolicy="ALWAYS"
+                            vmin="1.0" vvalue="1.0" VBox.vgrow="ALWAYS">
+                    <content>
+                        <ListView fx:id="userPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                                  prefHeight="200.0" prefWidth="200.0"/>
+                    </content>
+                </ScrollPane>
             </children>
         </VBox>
     </left>
