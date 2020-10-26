@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientController">
+    <top>
+        <HBox fx:id="login_box" alignment="TOP_RIGHT" minHeight="30.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0"
+              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <TextField fx:id="userField" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity"
+                           onMouseClicked="#userNameClicked" prefHeight="30.0" prefWidth="200.0" promptText="username">
+                    <HBox.margin>
+                        <Insets left="5.0" right="5.0"/>
+                    </HBox.margin>
+                </TextField>
+                <TextField fx:id="serverField" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity"
+                           onMouseClicked="#serverClicked" prefHeight="30.0" prefWidth="200.0" promptText="server"
+                           text="localhost">
+                    <HBox.margin>
+                        <Insets left="5.0" right="5.0"/>
+                    </HBox.margin>
+                </TextField>
+                <TextField fx:id="portField" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity"
+                           onMouseClicked="#portClicked" prefHeight="30.0" prefWidth="200.0" promptText="port"
+                           text="1000">
+                    <HBox.margin>
+                        <Insets left="5.0" right="5.0"/>
+                    </HBox.margin>
+                </TextField>
+                <Button fx:id="connect_button" maxHeight="-Infinity" mnemonicParsing="false"
+                        onAction="#connectButtonAction" prefHeight="30.0" prefWidth="80.0" text="Connect">
+                    <HBox.margin>
+                        <Insets/>
+                    </HBox.margin>
+                </Button>
+                <Button layoutX="720.0" layoutY="10.0" maxHeight="-Infinity" mnemonicParsing="false" onAction="#exit"
+                        prefHeight="30.0" prefWidth="80.0" text="exit"/>
+            </children>
+        </HBox>
+    </top>
+    <left>
+        <VBox prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <children>
+                <AnchorPane>
+                    <children>
+                        <Label prefHeight="20.0" text="Users Active in chat" textAlignment="CENTER"
+                               AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                               AnchorPane.topAnchor="0.0"/>
+                    </children>
+                </AnchorPane>
+                <AnchorPane VBox.vgrow="ALWAYS">
+                    <children>
+                        <ScrollPane fx:id="userListScrollPane" hbarPolicy="NEVER" vbarPolicy="ALWAYS"
+                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                    </children>
+                </AnchorPane>
+            </children>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <children>
+                <AnchorPane>
+                    <children>
+                        <Label prefHeight="20.0" text="Message List" textAlignment="CENTER"
+                               AnchorPane.bottomAnchor="0.0"
+                               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                    </children>
+                </AnchorPane>
+                <AnchorPane VBox.vgrow="ALWAYS">
+                    <children>
+                        <ScrollPane fx:id="messageListScrollPane" hbarPolicy="NEVER" vbarPolicy="ALWAYS" vmin="1.0"
+                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                    AnchorPane.rightAnchor="0.0"
+                                    AnchorPane.topAnchor="0.0">
+                            <ListView fx:id="chatPane" maxHeight="1.7976931348623157E308"
+                                      maxWidth="1.7976931348623157E308"
+                                      prefHeight="200.0" prefWidth="200.0"/>
+                        </ScrollPane>
+                    </children>
+                </AnchorPane>
+            </children>
+        </VBox>
+    </center>
+
+
+    <bottom>
+        <HBox fx:id="input_box" alignment="BOTTOM_RIGHT" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <AnchorPane HBox.hgrow="ALWAYS">
+                    <children>
+                        <TextField fx:id="msgField" maxHeight="-Infinity" onKeyPressed="#keyPressed"
+                                   onMouseClicked="#messageFieldClicked" prefHeight="30.0" promptText="Enter Message"
+                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                    </children>
+                </AnchorPane>
+                <Button fx:id="send_button" maxHeight="-Infinity" mnemonicParsing="false" onAction="#sendMessage"
+                        prefHeight="30.0" prefWidth="80.0" text="Send !" textAlignment="CENTER"/>
+            </children>
+        </HBox>
+
+    </bottom>
+</BorderPane>
