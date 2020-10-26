@@ -20,6 +20,7 @@ public class ChatApplication extends Application {
 
         Scene scene = new Scene(root, 300, 275);
 
+
         String title = "Socket-based Chat service";
         primaryStage.setTitle(title);
         primaryStage.setScene(scene);
