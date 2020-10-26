@@ -16,10 +16,9 @@ public class ChatApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/gui/ChatView.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/gui/ChatView_v2.fxml"));
 
         Scene scene = new Scene(root, 300, 275);
-
 
         String title = "Socket-based Chat service";
         primaryStage.setTitle(title);
