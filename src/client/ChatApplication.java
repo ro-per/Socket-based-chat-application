@@ -10,12 +10,16 @@ import java.io.IOException;
 
 public class ChatApplication extends Application {
 
+    private static Stage primaryStageObj;
+
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        primaryStageObj = primaryStage;
         Parent root = FXMLLoader.load(getClass().getResource("/gui/ChatView_v2.fxml"));
 
         Scene scene = new Scene(root, 300, 275);
@@ -26,6 +30,10 @@ public class ChatApplication extends Application {
         primaryStage.setMaximized(true);
         primaryStage.setFullScreen(false);
         primaryStage.show();
+    }
+
+    public static Stage getPrimaryStage() {
+        return primaryStageObj;
     }
 
 }

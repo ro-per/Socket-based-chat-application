@@ -1,13 +1,16 @@
 package server;
 
+import server.exceptions.DuplicateUsernameException;
+import server.messages.Message;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ChatServer implements ChatServerInterface {
-    private Set<String> users = new HashSet<>();
-    private Set<ServerThread> serverThreads = new HashSet<>();
+public class ChatServer {
+    private Set<User> allUsers = new HashSet<>();
+    private Set<ServerThread> allServerThreads = new HashSet<>();
     private final int port;
 
     /* ----------------------------- MAIN ----------------------------- */
@@ -30,7 +33,7 @@ public class ChatServer implements ChatServerInterface {
 
             while (true) {
                 ServerThread serverThread = new ServerThread(serverSocket.accept(), this);
-                serverThreads.add(serverThread);
+                allServerThreads.add(serverThread);
                 serverThread.start();
             }
         } catch (IOException e) {
@@ -40,38 +43,64 @@ public class ChatServer implements ChatServerInterface {
     }
 
     /* ----------------------------- METHODS ----------------------------- */
-    @Override
-    public void broadcast(String msg) {
-        for (ServerThread thread : serverThreads) { // each client has own server thread
-            thread.send(msg);
+
+    public void processMessage(Message msg) throws DuplicateUsernameException, IOException {
+        switch (msg.getType()) {
+            case GROUP:
+                sendGroupMessage(msg);
+                break;
+            case PRIVATE:
+                sendPrivateMessage(msg);
+                break;
+            case BROADCAST:
+                sendBroadcast(msg);
+                break;
+            case CONNECT:
+                connectUser(msg.getSender());
+                break;
+            case DISCONNECT:
+                disconnectUser(msg.getSender(), msg.getServerThread());
+                break;
         }
-        System.out.println(this+ ": "+msg);
     }
 
-    @Override
-    public void addUser(String user) {
-        users.add(user);
+    private void sendGroupMessage(Message msg) {
+
     }
 
-    @Override
-    public void removeUser(String user, ServerThread serverThread) {
-        boolean removed = users.remove(user);
+    private void sendPrivateMessage(Message msg) {
+
+    }
+
+    private void sendBroadcast(Message msg) throws IOException {
+        for (ServerThread thread : allServerThreads) { // each client has own server thread
+            thread.printOnOutputStream(msg);
+        }
+        System.out.println("Broadcast: " + msg);
+    }
+
+
+    public void connectUser(User user) throws DuplicateUsernameException {
+        if (allUsers.contains(user)) {
+            throw new DuplicateUsernameException("User already exists");
+        } else {
+            allUsers.add(user);
+        }
+    }
+
+    public void disconnectUser(User user, ServerThread serverThread) {
+        boolean removed = allUsers.remove(user);
         if (removed) {
-            serverThreads.remove(serverThread);
+            allServerThreads.remove(serverThread);
         }
     }
 
-    Set<String> getUsers() {
-        return this.users;
-    }
-
-    @Override
-    public boolean isDuplicateUserName(String user) {
-        return !users.contains(user);
+    private Set<User> getAllUsers() {
+        return this.allUsers;
     }
 
     boolean hasConnectedUsers() {
-        return !serverThreads.isEmpty();
+        return !allServerThreads.isEmpty();
     }
 
 

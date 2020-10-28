@@ -1,28 +1,27 @@
 package server;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import server.exceptions.DuplicateUsernameException;
+import server.messages.Message;
+import server.messages.MessageType;
+
+import java.io.*;
 import java.net.Socket;
 
 public class ServerThread extends Thread {
-
-    private Socket socket = null;
-    private ChatServer server;
-    private PrintWriter out;
-    private BufferedReader in;
+    private Socket socket;
+    private ChatServer chatServer;
+    private ObjectInputStream input;
+    private OutputStream os;
+    private ObjectOutputStream output;
+    private InputStream is;
     private Boolean canReceive;
-    private String user;
-    private boolean leaving;
-    /* ----------------------------- MESSAGES ----------------------------- */
-    static final String ERROR_DUPLICATE_USERNAME = "Username is already taken !";
+    private User user;
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
     public ServerThread(Socket socket, ChatServer server) {
         super("MultiServerThread");
         this.socket = socket;
-        this.server = server;
+        this.chatServer = server;
         this.canReceive = false;
     }
 
@@ -30,90 +29,64 @@ public class ServerThread extends Thread {
     public void run() {
 
         try {
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            is = socket.getInputStream();
+            input = new ObjectInputStream(is);
+            os = socket.getOutputStream();
+            output = new ObjectOutputStream(os);
 
             onAuthentication();
-            onStartUp();
-            onSendMessage();
+            onListening();
+
             onLeaving();
 
-        } catch (IOException e) {
+        } catch (IOException | DuplicateUsernameException | ClassNotFoundException e) {
             e.printStackTrace();
-            server.removeUser(user, this);
         }
     }
 
     /* ----------------------------- METHODS ----------------------------- */
-    void onAuthentication() throws IOException {
-        user = in.readLine();
+    void onAuthentication() throws IOException, ClassNotFoundException {
+        Message firstMessage = (Message) input.readObject();
+        Message welcomeMessage = new Message(MessageType.PRIVATE, "Welcome !");
 
-        while (!server.isDuplicateUserName(user)) {
-            out.println(ERROR_DUPLICATE_USERNAME);
-            user = in.readLine();
+        try {
+            chatServer.processMessage(firstMessage);
+        } catch (DuplicateUsernameException de) {
+            de.printStackTrace();
         }
-
-        server.addUser(user);
-        server.broadcast(enterMessage(user));
-
-        //TODO Romeo update user list
-        updateConnectedUsers();
-    }
-
-    void onStartUp() {
+        this.user = firstMessage.getSender();
+        output.writeObject(welcomeMessage);
         canReceive = true;
-        out.println(welcomeMessage(user));
+
     }
 
-    void onSendMessage() throws IOException {
-        String msg;
-        do {
-            msg = in.readLine();
-            if (msg.contains("LEAVE")) {
-                leaving = true;
-            } else {
-                server.broadcast(formatMessage(user, msg));
+    void onListening() throws IOException, DuplicateUsernameException, ClassNotFoundException {
+        while (socket.isConnected()) {
+            Message inMessage = (Message) input.readObject();
+            if (inMessage != null) {
+                System.out.println(inMessage.getType() + " - " + inMessage.getSender() + ": " + inMessage.getText());
+                chatServer.processMessage(inMessage);
             }
-        } while (!leaving);
-
-    }
-
-    void onLeaving() throws IOException {
-        //TODO Romeo update users
-
-        server.removeUser(user, this);
-        socket.close();
-        server.broadcast(leaveMessage(user));
-    }
-
-    void send(String msg) {
-        if (canReceive) out.println(msg);
-
-    }
-
-    void updateConnectedUsers() {
-        if (server.hasConnectedUsers()) {
-            out.println("Connected users:" + server.getUsers());
-        } else {
-            out.println("No other users connected");
         }
     }
 
-    /* ----------------------------- MESSAGE 'BUILDERS' ----------------------------- */
-    private String formatMessage(String user, String msg) {
-        return "[" + user + "]: " + msg;
+    void onLeaving() throws IOException, DuplicateUsernameException {
+        try {
+            Message msg = new Message(MessageType.DISCONNECT);
+            msg.setSender(user);
+            chatServer.processMessage(msg);
+        } catch (DuplicateUsernameException de) {
+            de.printStackTrace();
+        }
+        canReceive = false; // TODO DEBUG fault can occur here
+        Message leaveMessage = new Message(user, MessageType.BROADCAST, user.getName() + " has left");
+        socket.close();
+        chatServer.processMessage(leaveMessage);
     }
 
-    private String welcomeMessage(String user) {
-        return "Welcome " + user;
-    }
+    void printOnOutputStream(Message msg) throws IOException {
+        if (canReceive) output.writeObject(msg);
 
-    private String enterMessage(String user) {
-        return user + " has entered the chat";
-    }
-
-    private String leaveMessage(String user) {
-        return user + " has left the chat";
     }
 }
 

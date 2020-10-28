@@ -1,20 +1,22 @@
 package client;
 
 import javafx.collections.ObservableList;
+import server.User;
+import server.messages.Message;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class ChatClient implements ChatClientInterface {
-    private String user;
-    private String server;
-    private int port;
+public class ChatClient {
+    private final User user;
+    private final String server;
+    private final int port;
     private ClientThread clientThread;
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
-    public ChatClient(String user, String server, int port) {
-        this.user = user;
+    public ChatClient(String user_name, String server, int port) {
+        this.user = new User(user_name);
         this.server = server;
         this.port = port;
     }
@@ -24,7 +26,7 @@ public class ChatClient implements ChatClientInterface {
         try {
             Socket socket = new Socket(server, port);
             clientThread = new ClientThread(socket, server, user);
-            new Thread(clientThread).start();
+            new Thread(clientThread).start();                               //TODO USES CONNECT MESSAGE
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + server);
             System.exit(1);
@@ -36,19 +38,13 @@ public class ChatClient implements ChatClientInterface {
         return true;
     }
 
-    /* ----------------------------- METHODS ----------------------------- */
-    @Override
-    public void send(String message) throws IOException {
-        ClientThread.send(message);
-    }
-
     /* ----------------------------- GETTERS ----------------------------- */
-    @Override
-    public ObservableList<String> getMessages() {
+
+    public ObservableList<Message> getMessages() {
         return clientThread.getMessages();
     }
 
-    public String getUser() {
+    public User getUser() {
         return user;
     }
 
@@ -60,16 +56,12 @@ public class ChatClient implements ChatClientInterface {
         return port;
     }
 
+    public ClientThread getClientThread() {
+        return clientThread;
+    }
     /* ----------------------------- SETTERS ----------------------------- */
-    public void setUser(String user) {
-        this.user = user;
-    }
 
-    public void setServer(String server) {
-        this.server = server;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
+    public void setClientThread(ClientThread clientThread) {
+        this.clientThread = clientThread;
     }
 }

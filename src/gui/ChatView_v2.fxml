@@ -65,7 +65,7 @@
                         <TextField fx:id="msgField" maxHeight="-Infinity" onKeyPressed="#keyPressed" onMouseClicked="#messageFieldClicked" prefHeight="30.0" promptText="Enter Message" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                     </children>
                 </AnchorPane>
-                <Button fx:id="send_button" maxHeight="-Infinity" mnemonicParsing="false" onAction="#sendMessage" prefHeight="30.0" prefWidth="80.0" text="Send !" textAlignment="CENTER" />
+                <Button fx:id="send_button" maxHeight="-Infinity" mnemonicParsing="false" onAction="#sendButtonAction" prefHeight="30.0" prefWidth="80.0" text="Send !" textAlignment="CENTER" />
             </children>
         </HBox>
 

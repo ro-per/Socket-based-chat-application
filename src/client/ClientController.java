@@ -1,14 +1,24 @@
 package client;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Lighting;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import server.messages.Message;
+import server.messages.MessageType;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class ClientController {
     private ChatClient client;
@@ -50,14 +60,12 @@ public class ClientController {
             this.serverField.setText(ERROR_EMPTY_SERVER);
             flashTextField(this.serverField);
             correct = false;
-
         }
 
         if (portString.isEmpty()) {
             this.portField.setText(ERROR_EMPTY_PORT);
             flashTextField(this.portField);
             correct = false;
-
         } else if (!isInteger(portString)) {
             this.portField.setText(ERROR_FORMAT_PORT);
             flashTextField(this.portField);
@@ -70,27 +78,34 @@ public class ClientController {
         }
     }
 
-
     private void connectToServer(String userName, String serverName, int portNumber) {
-
         client = new ChatClient(userName, serverName, portNumber);
-
-        if (client.start()) {
+        if (client.start()) {                                               //TODO USES CONNECT MESSAGE
             chatPane.setItems(client.getMessages());
         }
     }
 
-    public void sendMessage() throws IOException {
-        String msg = msgField.getText();
-        if (!msg.isEmpty()) {
+    public void sendButtonAction() throws IOException {
+        String text = msgField.getText();
+        if (!text.isEmpty()) {
+            // type = radiobutton.getType //TODO
+            Message message = new Message(MessageType.BROADCAST, text);     //TODO message type choosing
+            client.getClientThread().sendToServer(message);                 //TODO USES PRIVATE/GROUP/BROADCAST MESSAGE
             msgField.clear();
-            ClientThread.send(msg);
         } else {
             msgField.setText(ERROR_EMPTY_MESSAGE);
             flashTextField(this.msgField);
         }
     }
 
+    public void exit() throws IOException, InterruptedException {
+//        ClientThread.stopThread(); //TODO USES DISCONNECT MESSAGE
+
+        Platform.exit();
+        System.exit(0);
+    }
+
+    /* ----------------------------- METHODS ----------------------------- */
     public static boolean isInteger(String s) {
         try {
             Integer.parseInt(s);
@@ -100,22 +115,10 @@ public class ClientController {
         // only got here if we didn't return false
         return true;
     }
-    /* ----------------------------- CLEAR SCREEN ----------------------------- */
-
-    private void clearUserList() {
-        /** TODO : clear the user list */
-
-    }
-
-    private void clearMessageList() {
-        /** TODO : clear the chat list */
-
-    }
-
 
     /* ----------------------------- KEY PRESSED ----------------------------- */
     public void keyPressed(KeyEvent ke) throws IOException {
-        if (ke.getCode().equals(KeyCode.ENTER)) sendMessage();
+        if (ke.getCode().equals(KeyCode.ENTER)) sendButtonAction();
     }
 
     /* ----------------------------- FIELD PRESSED ----------------------------- */
@@ -145,12 +148,16 @@ public class ClientController {
     }
 
 
-    public void exit() throws IOException {
-        //serverthread.onleaving
+/*
+    public void setUserList(Message msg) {
+        System.out.println("setUserList() method Enter");
+        Platform.runLater(() -> {
+            ObservableList<User> users = FXCollections.observableList(msg.getUsers());
+            userList.setItems(users);
+            userList.setCellFactory(new CellRenderer());
+            setOnlineLabel(String.valueOf(msg.getUserlist().size()));
+        });
+        System.out.println("setUserList() method Exit");
+    }*/
 
-        ClientThread.stop();
-
-        Platform.exit();
-        System.exit(0);
-    }
 }
