@@ -4,53 +4,40 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
-            prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="client.ClientController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" stylesheets="ChatView_v1.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientController">
     <top>
-        <HBox fx:id="login_box" alignment="TOP_RIGHT" prefHeight="30.0" AnchorPane.bottomAnchor="0.0"
-              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <HBox fx:id="login_box" alignment="TOP_RIGHT" prefHeight="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <TextField fx:id="userField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                           onMouseClicked="#userNameClicked" promptText="username">
+                <TextField fx:id="userField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#userNameClicked" promptText="username">
                     <HBox.margin>
-                        <Insets left="5.0" right="5.0"/>
+                        <Insets left="5.0" right="5.0" />
                     </HBox.margin>
                 </TextField>
-                <TextField fx:id="serverField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                           onMouseClicked="#serverClicked" promptText="server" text="localhost">
+                <TextField fx:id="serverField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#serverClicked" promptText="server" text="localhost">
                     <HBox.margin>
-                        <Insets left="5.0" right="5.0"/>
+                        <Insets left="5.0" right="5.0" />
                     </HBox.margin>
                 </TextField>
-                <TextField fx:id="portField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                           onMouseClicked="#portClicked" promptText="port" text="1000">
+                <TextField fx:id="portField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#portClicked" promptText="port" text="1000">
                     <HBox.margin>
-                        <Insets left="5.0" right="5.0"/>
+                        <Insets left="5.0" right="5.0" />
                     </HBox.margin>
                 </TextField>
-                <Button fx:id="connect_button" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                        mnemonicParsing="false" onAction="#connectButtonAction" prefWidth="80.0" text="Connect">
+                <Button fx:id="connect_button" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#connectButtonAction" prefWidth="80.0" text="Connect">
                     <HBox.margin>
-                        <Insets/>
+                        <Insets />
                     </HBox.margin>
                 </Button>
-                <Button layoutX="720.0" layoutY="10.0" maxHeight="1.7976931348623157E308"
-                        maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#exit" prefWidth="80.0"
-                        text="Exit"/>
+                <Button layoutX="720.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#exit" prefWidth="80.0" text="Exit" />
             </children>
         </HBox>
     </top>
     <left>
-       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0"
-              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+       <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308"
-                            maxWidth="1.7976931348623157E308" pannable="true" prefHeight="496.0" vbarPolicy="ALWAYS"
-                            vmin="1.0" vvalue="1.0" VBox.vgrow="ALWAYS">
+                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pannable="true" prefHeight="496.0" vbarPolicy="ALWAYS" vmin="1.0" vvalue="1.0" VBox.vgrow="ALWAYS">
                     <content>
-                        <ListView fx:id="userPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                  prefHeight="200.0" prefWidth="200.0"/>
+                        <ListView fx:id="userPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" />
                     </content>
                 </ScrollPane>
             </children>
@@ -58,15 +45,11 @@
     </left>
 
     <center>
-        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0"
-              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308"
-                            maxWidth="1.7976931348623157E308" pannable="true" prefHeight="496.0" vbarPolicy="ALWAYS"
-                            vmin="1.0" vvalue="1.0" VBox.vgrow="ALWAYS">
+                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pannable="true" prefHeight="496.0" vbarPolicy="ALWAYS" vmin="1.0" vvalue="1.0" VBox.vgrow="ALWAYS">
                     <content>
-                        <ListView fx:id="chatPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                  prefHeight="200.0" prefWidth="200.0"/>
+                        <ListView fx:id="chatPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" />
                     </content>
                 </ScrollPane>
             </children>
@@ -75,20 +58,14 @@
 
 
     <bottom>
-        <HBox fx:id="input_box" alignment="BOTTOM_RIGHT" maxHeight="1.7976931348623157E308"
-              maxWidth="1.7976931348623157E308" prefHeight="30.0" AnchorPane.bottomAnchor="0.0"
-              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <HBox fx:id="input_box" alignment="BOTTOM_RIGHT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="30.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <AnchorPane HBox.hgrow="ALWAYS">
                     <children>
-                        <TextField fx:id="msgField" maxHeight="-Infinity" onKeyPressed="#keyPressed"
-                                   onMouseClicked="#messageFieldClicked" prefHeight="30.0" promptText="Enter Message"
-                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                        <TextField fx:id="msgField" maxHeight="-Infinity" onKeyPressed="#keyPressed" onMouseClicked="#messageFieldClicked" prefHeight="30.0" promptText="Enter Message" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                     </children>
                 </AnchorPane>
-                <Button fx:id="send_button" maxHeight="-Infinity" mnemonicParsing="false" onAction="#sendMessage"
-                        prefHeight="30.0" prefWidth="80.0" text="Send !" textAlignment="CENTER"/>
+                <Button fx:id="send_button" maxHeight="-Infinity" mnemonicParsing="false" onAction="#sendMessage" prefHeight="30.0" prefWidth="80.0" text="Send !" textAlignment="CENTER" />
             </children>
         </HBox>
 
