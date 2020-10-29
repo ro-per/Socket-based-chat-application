@@ -15,7 +15,7 @@ public class ClientThread implements Runnable {
     private static boolean exit = false;
     private Socket socket;
     private String server;
-    private ObservableList<Message> messages;
+    private ObservableList<Message> messages; // TODO Romeo: dit moet een string worden van type
     private ObservableList<String> users;
     private User user;
     private static ObjectOutputStream oos;
@@ -41,7 +41,7 @@ public class ClientThread implements Runnable {
 
             while (socket.isConnected()) {
                 Message message = (Message) input.readObject();
-                Platform.runLater(() -> messages.add(message));
+                Platform.runLater(() -> messages.add(message)); //TODO Romeo hier moet een String meegegevn worden
             }
 
         } catch (IOException | ClassNotFoundException e) {
@@ -55,7 +55,7 @@ public class ClientThread implements Runnable {
     }
 
     /**
-     * CONNECT / DISCONNECT RIVATE / GROUP / BROADCAST MESSAGE
+     * CONNECT / DISCONNECT PRIVATE / GROUP / BROADCAST MESSAGE
      */
     //SENDER COMMUNICATION
     public void sendToServer(Message msg) throws IOException {

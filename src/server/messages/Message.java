@@ -77,15 +77,16 @@ public class Message implements Serializable {
     /* ----------------------------- SETTERS ----------------------------- */
     public void addMember(User member) throws PrivacyException {
         //Only add users to group chat for GROUP messages
-
         if (this.messageType != MessageType.GROUP) {
             throw new PrivacyException("Users can only be added to a group message");
         } else {
             this.group.add(member);
-
         }
-
     }
+    public void setSender(User user) {
+        this.sender=user;
+    }
+
 
     /* ----------------------------- OVERRIDE ----------------------------- */
     @Override
@@ -114,7 +115,4 @@ public class Message implements Serializable {
         return Objects.hash(sender, messageType, timestamp);
     }
 
-    public void setSender(User user) {
-        this.sender=user;
-    }
 }

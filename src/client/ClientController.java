@@ -36,7 +36,6 @@ public class ClientController {
     @FXML
     private ListView userPane;
     /* ----------------------------- ERROR MESSAGES ----------------------------- */
-
     static final String ERROR_EMPTY_MESSAGE = "Cannot send empty message !";
     static final String ERROR_EMPTY_USER = "Required !";
     static final String ERROR_EMPTY_SERVER = "Required ! !";

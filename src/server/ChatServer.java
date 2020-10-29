@@ -65,7 +65,7 @@ public class ChatServer {
     }
 
     private void sendGroupMessage(Message msg) {
-
+        //map.get(u) --> serverthread
     }
 
     private void sendPrivateMessage(Message msg) {
