@@ -67,7 +67,13 @@ public class Message implements Serializable {
     }
 
     public String getText() {
-        return text;
+        switch (messageType){
+            case GROUP:
+            case BROADCAST:
+                return "[" + sender.getName() +"]: " + text;
+            default:
+                return text;
+        }
     }
 
     public ServerThread getServerThread() {

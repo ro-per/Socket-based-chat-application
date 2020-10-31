@@ -14,6 +14,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import server.User;
 import server.messages.Message;
 import server.messages.MessageType;
 
@@ -43,7 +44,7 @@ public class ClientController {
     static final String ERROR_FORMAT_PORT = "Only numbers allowed !";
 
     /* ----------------------------- METHODS ----------------------------- */
-    public void connectButtonAction() {
+    public void connectButtonAction() throws IOException {
         String userNameString = this.userField.getText();
         String serverString = serverField.getText();
         String portString = portField.getText();
@@ -77,10 +78,13 @@ public class ClientController {
         }
     }
 
-    private void connectToServer(String userName, String serverName, int portNumber) {
+    private void connectToServer(String userName, String serverName, int portNumber) throws IOException {
         client = new ChatClient(userName, serverName, portNumber);
         if (client.start()) {                                               //TODO USES CONNECT MESSAGE
             chatPane.setItems(client.getMessages());
+            Message message = new Message(MessageType.CONNECT);
+            message.setSender(new User(userName));
+            client.getClientThread().sendToServer(message);
         }
     }
 

@@ -36,7 +36,6 @@ public class ServerThread extends Thread {
 
             onAuthentication();
             onListening();
-
             onLeaving();
 
         } catch (IOException | DuplicateUsernameException | ClassNotFoundException e) {
@@ -55,6 +54,7 @@ public class ServerThread extends Thread {
             de.printStackTrace();
         }
         this.user = firstMessage.getSender();
+        welcomeMessage.setSender(user);
         output.writeObject(welcomeMessage);
         canReceive = true;
 

@@ -40,7 +40,7 @@ public class ChatClient {
 
     /* ----------------------------- GETTERS ----------------------------- */
 
-    public ObservableList<Message> getMessages() {
+    public ObservableList<String> getMessages() {
         return clientThread.getMessages();
     }
 

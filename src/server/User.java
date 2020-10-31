@@ -1,9 +1,10 @@
 package server;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Random;
 
-public class User {
+public class User implements Serializable {
 
     private String name;
     private final String idUser;
