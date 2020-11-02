@@ -1,14 +1,20 @@
 package client;
 
+import com.sun.istack.internal.Nullable;
 import javafx.collections.ObservableList;
 import server.User;
 import server.messages.Message;
+import server.messages.MessageType;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ChatClient {
+
+    private static final Logger logger = Logger.getLogger(ChatClient.class.getName());
 
     private final User user;
     private final String server;
@@ -16,8 +22,8 @@ public class ChatClient {
     private ClientThread clientThread;
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
-    public ChatClient(String user_name, String server, int port) {
-        this.user = new User(user_name);
+    public ChatClient(String username, String server, int port) {
+        this.user = new User(username);
         this.server = server;
         this.port = port;
     }
@@ -29,16 +35,54 @@ public class ChatClient {
             clientThread = new ClientThread(socket, server, user);
             new Thread(clientThread).start();                               //TODO USES CONNECT MESSAGE
         } catch (UnknownHostException e) {
-            System.err.println("Don't know about host " + server);
+            error("Don't know about host " + server);
             System.exit(1);
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O for the connection to " +
-                    server);
+            error("Couldn't get I/O for the connection to " + server);
             System.exit(1);
         }
         return true;
     }
 
+    public void connectUser(String username) {
+        Message message = new Message(MessageType.CONNECT);
+        message.setSender(new User(username));
+        try {
+            info("Connecting...");
+            clientThread.sendToServer(message);
+        } catch (IOException e) {
+            error("Could not connect with the server.");
+        }
+    }
+
+    public void broadcast(String text) {
+        Message message = new Message(user, MessageType.BROADCAST, text);
+        try {
+            info("Broadcasting...");
+            clientThread.sendToServer(message);
+        } catch (IOException e) {
+            error("Could not connect with the server.");
+        }
+    }
+
+    public void leave() {
+        Message message = new Message(MessageType.DISCONNECT);
+        try {
+            clientThread.sendToServer(message);
+            info("Leaving...");
+            clientThread.stop();
+        } catch (IOException e){
+            error("Could not connect with the server.");
+        }
+    }
+
+    private static void info(String msg, @Nullable Object... params) {
+        logger.log(Level.INFO, msg, params);
+    }
+
+    private static void error(String msg, @Nullable Object... params) {
+        logger.log(Level.WARNING, msg, params);
+    }
     /* ----------------------------- GETTERS ----------------------------- */
 
     public ObservableList<String> getMessages() {

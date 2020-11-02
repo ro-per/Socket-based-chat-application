@@ -15,7 +15,6 @@ public class Message implements Serializable {
     private final String text;
     private Set<User> group;
     private final Timestamp timestamp;
-    private ServerThread serverThread;
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
     public Message(User sender, MessageType messageType, String text) {
@@ -74,10 +73,6 @@ public class Message implements Serializable {
             default:
                 return text;
         }
-    }
-
-    public ServerThread getServerThread() {
-        return serverThread;
     }
 
     /* ----------------------------- SETTERS ----------------------------- */

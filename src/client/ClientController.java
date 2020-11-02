@@ -72,20 +72,16 @@ public class ClientController {
 
     private void connectToServer(String userName, String serverName, int portNumber) throws IOException {
         client = new ChatClient(userName, serverName, portNumber);
-        if (client.start()) {                                               //TODO USES CONNECT MESSAGE
+        if (client.start()) {
             chatPane.setItems(client.getMessages());
-            Message message = new Message(MessageType.CONNECT);
-            message.setSender(new User(userName));
-            client.getClientThread().sendToServer(message);
+            client.connectUser(userName);
         }
     }
 
     public void sendButtonAction() throws IOException {
         String text = msgField.getText();
         if (!text.isEmpty()) {
-            // type = radiobutton.getType //TODO
-            Message message = new Message(MessageType.BROADCAST, text);     //TODO message type choosing
-            client.getClientThread().sendToServer(message);                 //TODO USES PRIVATE/GROUP/BROADCAST MESSAGE
+            client.broadcast(text);
             msgField.clear();
         } else {
             msgField.setText(ERROR_EMPTY_MESSAGE);
@@ -93,9 +89,8 @@ public class ClientController {
         }
     }
 
-    public void exit() throws IOException, InterruptedException {
-//        ClientThread.stopThread(); //TODO USES DISCONNECT MESSAGE
-
+    public void exit() throws IOException {
+        client.leave();
         Platform.exit();
         System.exit(0);
     }

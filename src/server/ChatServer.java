@@ -1,16 +1,23 @@
 package server;
 
+import com.sun.istack.internal.Nullable;
 import server.exceptions.DuplicateUsernameException;
+import server.exceptions.UserNotFoundException;
 import server.messages.Message;
+import server.messages.MessageType;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ChatServer {
-    private Set<User> allUsers = new HashSet<>();
-    private Set<ServerThread> allServerThreads = new HashSet<>();
+    private static final Logger logger = Logger.getLogger(ChatServer.class.getName());
+
+    private ChatServerController serverController;
+    private Map<User, ServerThread> allServerThreads = new HashMap<>();
     private final int port;
 
     /* ----------------------------- MAIN ----------------------------- */
@@ -22,6 +29,7 @@ public class ChatServer {
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
     public ChatServer(int port) {
+        serverController = new ChatServerController();
         this.port = port;
     }
 
@@ -29,22 +37,21 @@ public class ChatServer {
     public void start() {
         try {
             ServerSocket serverSocket = new ServerSocket(port);
-            System.out.println("Server listening on port " + port);
+            info("Server listening on port " + port);
 
             while (true) {
                 ServerThread serverThread = new ServerThread(serverSocket.accept(), this);
-                allServerThreads.add(serverThread);
                 serverThread.start();
             }
         } catch (IOException e) {
-            System.err.println("Could not listen on port " + port);
+            error("Could not listen on port " + port);
             System.exit(-1);
         }
     }
 
     /* ----------------------------- METHODS ----------------------------- */
 
-    public void processMessage(Message msg) throws DuplicateUsernameException, IOException {
+    public void processMessage(Message msg, ServerThread thread) throws IOException {
         switch (msg.getType()) {
             case GROUP:
                 sendGroupMessage(msg);
@@ -56,10 +63,10 @@ public class ChatServer {
                 sendBroadcast(msg);
                 break;
             case CONNECT:
-                connectUser(msg.getSender());
+                connectUser(msg.getSender(), thread);
                 break;
             case DISCONNECT:
-                disconnectUser(msg.getSender(), msg.getServerThread());
+                disconnectUser(msg.getSender(), thread);
                 break;
         }
     }
@@ -68,39 +75,55 @@ public class ChatServer {
         //map.get(u) --> serverthread
     }
 
-    private void sendPrivateMessage(Message msg) {
-
+    // send message to yourself
+    private void sendPrivateMessage(Message msg) throws IOException {
+        ServerThread thread = allServerThreads.get(msg.getSender());
+        thread.printOnOutputStream(msg);
     }
 
     private void sendBroadcast(Message msg) throws IOException {
-        for (ServerThread thread : allServerThreads) { // each client has own server thread
+        for (ServerThread thread : allServerThreads.values()) { // each client has own server thread
             thread.printOnOutputStream(msg);
         }
-        System.out.println("Broadcast: " + msg);
+        info(msg.getSender() + " is broadcasting: " + msg);
     }
 
 
-    public void connectUser(User user) throws DuplicateUsernameException {
-        if (allUsers.contains(user)) {
-            throw new DuplicateUsernameException("User already exists");
-        } else {
-            allUsers.add(user);
+    public void connectUser(User user, ServerThread thread) throws IOException {
+        info(user.getName() + " is connecting to the server.");
+        try {
+            serverController.connectUser(user.getName());
+            allServerThreads.put(user, thread);
+            thread.printOnOutputStream(new Message(MessageType.PRIVATE, "Welcome to the chat!"));
+            info(user.getName() + " is connected to server.");
+        } catch (DuplicateUsernameException e) {
+            thread.printOnOutputStream(new Message(MessageType.PRIVATE, "Username is already been used."));
+            info(user.getName() + " failed to connect to server.");
         }
     }
 
-    public void disconnectUser(User user, ServerThread serverThread) {
-        boolean removed = allUsers.remove(user);
-        if (removed) {
-            allServerThreads.remove(serverThread);
+    public void disconnectUser(User user, ServerThread thread) {
+        try {
+            info(user.getName() + " is leaving the chat.");
+            serverController.disconnectUser(user.getName());
+            allServerThreads.remove(thread);
+            Message leaveMessage = new Message(MessageType.BROADCAST, user.getName() + " has left the chat");
+            leaveMessage.setSender(user);
+            sendBroadcast(leaveMessage);
+            info(user.getName() + " left.");
+            thread.stopThread();
+        } catch (UserNotFoundException | IOException e) {
+            error(e.getMessage());
         }
+
     }
 
-    private Set<User> getAllUsers() {
-        return this.allUsers;
+    private static void info(String msg, @Nullable Object... params) {
+        logger.log(Level.INFO, msg, params);
     }
 
-    boolean hasConnectedUsers() {
-        return !allServerThreads.isEmpty();
+    private static void error(String msg, @Nullable Object... params) {
+        logger.log(Level.WARNING, msg, params);
     }
 
 }

@@ -5,13 +5,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import server.User;
 import server.messages.Message;
-import server.messages.MessageType;
 
 import java.io.*;
 import java.net.Socket;
 
 public class ClientThread implements Runnable {
 
+    private volatile boolean isRunning = true;
     private Socket socket;
     private String server;
     private ObservableList<String> messages;
@@ -38,7 +38,7 @@ public class ClientThread implements Runnable {
             is = socket.getInputStream();
             input = new ObjectInputStream(is);
 
-            while (socket.isConnected()) {
+            while (isRunning) {
                 Message message = (Message) input.readObject();
                 Platform.runLater(() -> messages.add(message.getText()));
             }
@@ -53,22 +53,15 @@ public class ClientThread implements Runnable {
         return messages;
     }
 
-    /**
-     * CONNECT / DISCONNECT PRIVATE / GROUP / BROADCAST MESSAGE
-     */
     public void sendToServer(Message msg) throws IOException {
         msg.setSender(user);
         oos.writeObject(msg);
         oos.flush();
     }
 
-    /**
-     * l
-     * DISCONNECT MESSAGE
-     */
-    public void stopThread() throws IOException {
-        Message msg = new Message(MessageType.DISCONNECT);
-        sendToServer(msg);
+
+    public void stop() {
+        isRunning = false;
     }
 
 }

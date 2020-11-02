@@ -1,20 +1,25 @@
 package server;
 
-import server.exceptions.DuplicateUsernameException;
+import com.sun.istack.internal.Nullable;
 import server.messages.Message;
 import server.messages.MessageType;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ServerThread extends Thread {
+
+    private static final Logger logger = Logger.getLogger(ServerThread.class.getName());
+
+    private volatile boolean isRunning;
     private Socket socket;
     private ChatServer chatServer;
     private ObjectInputStream input;
     private OutputStream os;
     private ObjectOutputStream output;
     private InputStream is;
-    private Boolean canReceive;
     private User user;
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
@@ -22,7 +27,6 @@ public class ServerThread extends Thread {
         super("MultiServerThread");
         this.socket = socket;
         this.chatServer = server;
-        this.canReceive = false;
     }
 
     /* ----------------------------- RUN ----------------------------- */ // TODO Called when: thread.start
@@ -33,12 +37,12 @@ public class ServerThread extends Thread {
             input = new ObjectInputStream(is);
             os = socket.getOutputStream();
             output = new ObjectOutputStream(os);
+            isRunning = true;
 
             onAuthentication();
             onListening();
-            onLeaving();
 
-        } catch (IOException | DuplicateUsernameException | ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -46,47 +50,38 @@ public class ServerThread extends Thread {
     /* ----------------------------- METHODS ----------------------------- */
     void onAuthentication() throws IOException, ClassNotFoundException {
         Message firstMessage = (Message) input.readObject();
-        Message welcomeMessage = new Message(MessageType.PRIVATE, "Welcome !");
-
-        try {
-            chatServer.processMessage(firstMessage);
-        } catch (DuplicateUsernameException de) {
-            de.printStackTrace();
-        }
-        this.user = firstMessage.getSender();
-        welcomeMessage.setSender(user);
-        output.writeObject(welcomeMessage);
-        canReceive = true;
-
+        chatServer.processMessage(firstMessage, this);
     }
 
-    void onListening() throws IOException, DuplicateUsernameException, ClassNotFoundException {
-        while (socket.isConnected()) {
+    void onListening() throws IOException, ClassNotFoundException {
+        while (isRunning) {
             Message inMessage = (Message) input.readObject();
             if (inMessage != null) {
-                System.out.println(inMessage.getType() + " - " + inMessage.getSender() + ": " + inMessage.getText());
-                chatServer.processMessage(inMessage);
+                info(inMessage.getType() + " - " + inMessage.getSender() + ": " + inMessage.getText());
+                chatServer.processMessage(inMessage, this);
             }
         }
     }
 
-    void onLeaving() throws IOException, DuplicateUsernameException {
-        try {
-            Message msg = new Message(MessageType.DISCONNECT);
-            msg.setSender(user);
-            chatServer.processMessage(msg);
-        } catch (DuplicateUsernameException de) {
-            de.printStackTrace();
-        }
-        canReceive = false; // TODO DEBUG fault can occur here
-        Message leaveMessage = new Message(user, MessageType.BROADCAST, user.getName() + " has left");
+    void stopThread() throws IOException {
+        isRunning = false;
         socket.close();
-        chatServer.processMessage(leaveMessage);
     }
 
     void printOnOutputStream(Message msg) throws IOException {
-        if (canReceive) output.writeObject(msg);
+        output.writeObject(msg);
+    }
 
+    public User getUser(){
+        return user;
+    }
+
+    private static void info(String msg, @Nullable Object... params) {
+        logger.log(Level.INFO, msg, params);
+    }
+
+    private static void error(String msg, @Nullable Object... params) {
+        logger.log(Level.WARNING, msg, params);
     }
 }
 
