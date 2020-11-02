@@ -14,28 +14,26 @@ public class ServerThread extends Thread {
     private static final Logger logger = Logger.getLogger(ServerThread.class.getName());
 
     private volatile boolean isRunning;
-    private Socket socket;
-    private ChatServer chatServer;
+    private final Socket socket;
+    private final MessageHandler handler;
     private ObjectInputStream input;
-    private OutputStream os;
     private ObjectOutputStream output;
-    private InputStream is;
     private User user;
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
-    public ServerThread(Socket socket, ChatServer server) {
+    public ServerThread(Socket socket,MessageHandler handler) {
         super("MultiServerThread");
         this.socket = socket;
-        this.chatServer = server;
+        this.handler = handler;
     }
 
-    /* ----------------------------- RUN ----------------------------- */ // TODO Called when: thread.start
+    /* ----------------------------- RUN ----------------------------- */
     public void run() {
 
         try {
-            is = socket.getInputStream();
+            InputStream is = socket.getInputStream();
             input = new ObjectInputStream(is);
-            os = socket.getOutputStream();
+            OutputStream os = socket.getOutputStream();
             output = new ObjectOutputStream(os);
             isRunning = true;
 
@@ -50,7 +48,7 @@ public class ServerThread extends Thread {
     /* ----------------------------- METHODS ----------------------------- */
     void onAuthentication() throws IOException, ClassNotFoundException {
         Message firstMessage = (Message) input.readObject();
-        chatServer.processMessage(firstMessage, this);
+        handler.processMessage(firstMessage, this);
     }
 
     void onListening() throws IOException, ClassNotFoundException {
@@ -58,7 +56,7 @@ public class ServerThread extends Thread {
             Message inMessage = (Message) input.readObject();
             if (inMessage != null) {
                 info(inMessage.getType() + " - " + inMessage.getSender() + ": " + inMessage.getText());
-                chatServer.processMessage(inMessage, this);
+                handler.processMessage(inMessage, this);
             }
         }
     }
@@ -72,9 +70,6 @@ public class ServerThread extends Thread {
         output.writeObject(msg);
     }
 
-    public User getUser(){
-        return user;
-    }
 
     private static void info(String msg, @Nullable Object... params) {
         logger.log(Level.INFO, msg, params);

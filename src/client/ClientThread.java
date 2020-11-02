@@ -1,26 +1,29 @@
 package client;
 
+import com.sun.istack.internal.Nullable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import server.ServerThread;
 import server.User;
 import server.messages.Message;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ClientThread implements Runnable {
 
+    private static final Logger logger = Logger.getLogger(ClientThread.class.getName());
+
     private volatile boolean isRunning = true;
-    private Socket socket;
-    private String server;
+    private final Socket socket;
+    private final String server;
     private ObservableList<String> messages;
     private ObservableList<String> users;
-    private User user;
+    private final User user;
     private static ObjectOutputStream oos;
-    private InputStream is;
-    private ObjectInputStream input;
-    private OutputStream outputStream;
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
     public ClientThread(Socket socket, String server, User user) {
@@ -30,13 +33,13 @@ public class ClientThread implements Runnable {
         this.messages = FXCollections.observableArrayList();
     }
 
-    /* ----------------------------- RUN ----------------------------- */ // TODO Called when: thread.start
+    /* ----------------------------- RUN ----------------------------- */
     public void run() {
         try {
-            outputStream = socket.getOutputStream();
+            OutputStream outputStream = socket.getOutputStream();
             oos = new ObjectOutputStream(outputStream);
-            is = socket.getInputStream();
-            input = new ObjectInputStream(is);
+            InputStream is = socket.getInputStream();
+            ObjectInputStream input = new ObjectInputStream(is);
 
             while (isRunning) {
                 Message message = (Message) input.readObject();
@@ -44,7 +47,7 @@ public class ClientThread implements Runnable {
             }
 
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Couldn't get I/O for the connection to " + server);
+            error("Couldn't get I/O for the connection to " + server);
             System.exit(1);
         }
     }
@@ -62,6 +65,14 @@ public class ClientThread implements Runnable {
 
     public void stop() {
         isRunning = false;
+    }
+
+    private static void info(String msg, @Nullable Object... params) {
+        logger.log(Level.INFO, msg, params);
+    }
+
+    private static void error(String msg, @Nullable Object... params) {
+        logger.log(Level.WARNING, msg, params);
     }
 
 }

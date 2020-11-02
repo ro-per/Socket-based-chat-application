@@ -33,7 +33,7 @@ public class ChatClient {
         try {
             Socket socket = new Socket(server, port);
             clientThread = new ClientThread(socket, server, user);
-            new Thread(clientThread).start();                               //TODO USES CONNECT MESSAGE
+            new Thread(clientThread).start();
         } catch (UnknownHostException e) {
             error("Don't know about host " + server);
             System.exit(1);
