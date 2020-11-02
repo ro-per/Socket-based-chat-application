@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class ChatClient {
+
     private final User user;
     private final String server;
     private final int port;

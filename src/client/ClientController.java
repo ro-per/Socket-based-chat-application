@@ -1,25 +1,17 @@
 package client;
 
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Lighting;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 import server.User;
 import server.messages.Message;
 import server.messages.MessageType;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class ClientController {
     private ChatClient client;

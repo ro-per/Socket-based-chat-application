@@ -12,7 +12,6 @@ import java.net.Socket;
 
 public class ClientThread implements Runnable {
 
-    private static boolean exit = false;
     private Socket socket;
     private String server;
     private ObservableList<String> messages;
@@ -57,7 +56,6 @@ public class ClientThread implements Runnable {
     /**
      * CONNECT / DISCONNECT PRIVATE / GROUP / BROADCAST MESSAGE
      */
-    //SENDER COMMUNICATION
     public void sendToServer(Message msg) throws IOException {
         msg.setSender(user);
         oos.writeObject(msg);
