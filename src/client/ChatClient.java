@@ -2,7 +2,7 @@ package client;
 
 import com.sun.istack.internal.Nullable;
 import javafx.collections.ObservableList;
-import server.User;
+import server.User.User;
 import server.messages.Message;
 import server.messages.MessageType;
 
@@ -48,17 +48,28 @@ public class ChatClient {
         Message message = new Message(MessageType.CONNECT);
         message.setSender(new User(username));
         try {
-            info("Connecting...");
+            info("Trying to connect " + username);
+            clientThread.sendToServer(message);
+
+        } catch (IOException e) {
+            error("Could not connect with the server.");
+        }
+    }
+
+    public void sendBroadcastMSG(String text) {
+        Message message = new Message(user, MessageType.BROADCAST, text); //BROADCAST does not need receiver
+        try {
+            info("Broadcasting...");
             clientThread.sendToServer(message);
         } catch (IOException e) {
             error("Could not connect with the server.");
         }
     }
 
-    public void broadcast(String text) {
-        Message message = new Message(user, MessageType.BROADCAST, text);
+    public void sendPrivateMSG(String text, String receiver) {
+        Message message = new Message(user, MessageType.PRIVATE, text, receiver); // PRIVATE has 1 receiver
         try {
-            info("Broadcasting...");
+            info("Sending private message ...");
             clientThread.sendToServer(message);
         } catch (IOException e) {
             error("Could not connect with the server.");
@@ -71,7 +82,7 @@ public class ChatClient {
             clientThread.sendToServer(message);
             info("Leaving...");
             clientThread.stop();
-        } catch (IOException e){
+        } catch (IOException e) {
             error("Could not connect with the server.");
         }
     }
@@ -104,6 +115,9 @@ public class ChatClient {
     public ClientThread getClientThread() {
         return clientThread;
     }
+
+
+
     /* ----------------------------- SETTERS ----------------------------- */
 
     public void setClientThread(ClientThread clientThread) {

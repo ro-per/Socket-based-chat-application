@@ -20,7 +20,9 @@ public class ChatApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         primaryStageObj = primaryStage;
-        Parent root = FXMLLoader.load(getClass().getResource("/gui/ChatView_v2.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/ChatView_v2.fxml"));
+        Parent root = (Parent) loader.load();
+        ClientController controller = loader.<ClientController>getController();
 
         Scene scene = new Scene(root, 300, 275);
 
@@ -29,6 +31,14 @@ public class ChatApplication extends Application {
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
         primaryStage.setFullScreen(false);
+//        primaryStage.initStyle(StageStyle.DECORATED);
+        primaryStage.setOnCloseRequest(event -> {
+            try {
+                controller.exit();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
         primaryStage.show();
     }
 

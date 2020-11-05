@@ -2,19 +2,17 @@ package client;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Lighting;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import server.User;
-import server.messages.Message;
-import server.messages.MessageType;
 
 import java.io.IOException;
 
 public class ClientController {
-    private ChatClient client;
+    private ChatClient client = null;
     /* ----------------------------- @FXML ----------------------------- */
     @FXML
     private TextField userField;
@@ -25,11 +23,12 @@ public class ClientController {
     @FXML
     private TextField msgField;
     @FXML
+    private Button connectButton;
+    @FXML
     private ListView chatPane;
     @FXML
     private ListView userPane;
     /* ----------------------------- ERROR MESSAGES ----------------------------- */
-    static final String ERROR_EMPTY_MESSAGE = "Cannot send empty message !";
     static final String ERROR_EMPTY_USER = "Required !";
     static final String ERROR_EMPTY_SERVER = "Required ! !";
     static final String ERROR_EMPTY_PORT = "Required ! ! !";
@@ -67,7 +66,9 @@ public class ClientController {
         if (correct) {
             int port = Integer.parseInt(portString);
             connectToServer(userNameString, serverString, port);
+//            disableConnectButton(true);
         }
+
     }
 
     private void connectToServer(String userName, String serverName, int portNumber) throws IOException {
@@ -78,19 +79,33 @@ public class ClientController {
         }
     }
 
-    public void sendButtonAction() throws IOException {
+    public void sendBroadcastAction() throws IOException {
         String text = msgField.getText();
         if (!text.isEmpty()) {
-            client.broadcast(text);
+            client.sendBroadcastMSG(text);
             msgField.clear();
         } else {
-            msgField.setText(ERROR_EMPTY_MESSAGE);
+            flashTextField(this.msgField);
+        }
+    }
+
+    public void sendPrivateAction() throws IOException {
+        String text = msgField.getText();
+        if (!text.isEmpty()) {
+            client.sendPrivateMSG(text, "testuser"); //TODO HARDCODED
+            msgField.clear();
+        } else {
             flashTextField(this.msgField);
         }
     }
 
     public void exit() throws IOException {
-        client.leave();
+        //Only  perform leave is chatclient is started
+        if (client != null) {
+            client.leave();
+        }
+
+
         Platform.exit();
         System.exit(0);
     }
@@ -108,7 +123,7 @@ public class ClientController {
 
     /* ----------------------------- KEY PRESSED ----------------------------- */
     public void keyPressed(KeyEvent ke) throws IOException {
-        if (ke.getCode().equals(KeyCode.ENTER)) sendButtonAction();
+        if (ke.getCode().equals(KeyCode.ENTER)) sendBroadcastAction();
     }
 
     /* ----------------------------- FIELD PRESSED ----------------------------- */
@@ -135,6 +150,13 @@ public class ClientController {
     public void flashTextField(TextField t) {
         Lighting errorLighting = new Lighting();
         t.setEffect(errorLighting);
+    }
+
+    private void disableConnectButton(boolean b) {
+        this.userField.setDisable(b);
+        this.serverField.setDisable(b);
+        this.portField.setDisable(b);
+        this.connectButton.setDisable(b);
     }
 
 

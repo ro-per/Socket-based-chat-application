@@ -1,19 +1,18 @@
 package server.messages;
 
-import server.ServerThread;
-import server.User;
-import server.exceptions.PrivacyException;
+import server.User.User;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Date;
+import java.util.Objects;
 
 public class Message implements Serializable {
 
     private User sender;
     private final MessageType messageType;
     private final String text;
-    private Set<User> group;
+    private String receiver;
     private final Timestamp timestamp;
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
@@ -21,8 +20,6 @@ public class Message implements Serializable {
         this.sender = sender;
         this.messageType = messageType;
         this.text = text;
-        this.group = new HashSet<>();
-        this.group.add(sender);
         this.timestamp = new Timestamp(new Date().getTime());
     }
 
@@ -33,12 +30,11 @@ public class Message implements Serializable {
         this.timestamp = new Timestamp(new Date().getTime());
     }
 
-    public Message(User sender, MessageType messageType, String text, Set<User> group) {
+    public Message(User sender, MessageType messageType, String text, String receiver) {
         this.sender = sender;
         this.messageType = messageType;
         this.text = text;
-        this.group = group;
-        this.group.add(sender);
+        this.receiver = receiver;
         this.timestamp = new Timestamp(new Date().getTime());
     }
 
@@ -57,8 +53,8 @@ public class Message implements Serializable {
         return messageType;
     }
 
-    public Set<User> getGroup() {
-        return group;
+    public String getReceiverString() {
+        return receiver;
     }
 
     public Timestamp getTimestamp() {
@@ -66,26 +62,19 @@ public class Message implements Serializable {
     }
 
     public String getText() {
-        switch (messageType){
-            case GROUP:
+        switch (messageType) {
             case BROADCAST:
-                return "[" + sender.getName() +"]: " + text;
+                return "[BROADCAST:" + sender.getName() + "]: " + text;
+            case PRIVATE:
+                return "[PRIVATE:" + sender.getName() + "]: " + text;
             default:
                 return text;
         }
     }
 
     /* ----------------------------- SETTERS ----------------------------- */
-    public void addMember(User member) throws PrivacyException {
-        //Only add users to group chat for GROUP messages
-        if (this.messageType != MessageType.GROUP) {
-            throw new PrivacyException("Users can only be added to a group message");
-        } else {
-            this.group.add(member);
-        }
-    }
     public void setSender(User user) {
-        this.sender=user;
+        this.sender = user;
     }
 
 
@@ -95,7 +84,7 @@ public class Message implements Serializable {
         return "Message{" +
                 "sender=" + sender +
                 ", messageType=" + messageType +
-                ", group=" + group +
+                ", group=" + receiver +
                 ", timestamp=" + timestamp +
                 '}';
     }

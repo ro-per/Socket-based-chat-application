@@ -8,20 +8,17 @@ public class MessageHandler {
 
     private final ChatService service;
 
-    public MessageHandler(){
+    public MessageHandler() {
         this.service = new ChatService();
     }
 
     public void processMessage(Message msg, ServerThread thread) throws IOException {
         switch (msg.getType()) {
-            case GROUP:
-                service.sendGroupMessage(msg);
-                break;
             case PRIVATE:
-                service.sendMessageToSender(msg);
+                service.sendPrivateMSG(msg);
                 break;
             case BROADCAST:
-                service.sendBroadcast(msg);
+                service.sendBroadcastMSG(msg);
                 break;
             case CONNECT:
                 service.connectUser(msg.getSender(), thread);

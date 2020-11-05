@@ -31,7 +31,7 @@ public class ChatServer {
     public void start() {
         try {
             ServerSocket serverSocket = new ServerSocket(port);
-            info("Server listening on port " + port);
+            info("Server is listening on port " + port);
 
             while (true) {
                 ServerThread serverThread = new ServerThread(serverSocket.accept(), handler);

@@ -1,4 +1,4 @@
-package server;
+package server.User;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -15,7 +15,7 @@ public class User implements Serializable {
     }
 
     public User(String name) {
-        this.name = name;
+        this.name = name.toLowerCase();
         this.idUser = "u" + new Random().nextLong();
     }
 
@@ -28,9 +28,17 @@ public class User implements Serializable {
         return idUser;
     }
 
+
     /* ----------------------------- SETTERS ----------------------------- */
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    /* ----------------------------- METHODS ----------------------------- */
+
+    public boolean compareWithString(String name) {
+        return this.name.contains(name.toLowerCase());
     }
 
     /* ----------------------------- OVERRIDE ----------------------------- */
@@ -45,11 +53,11 @@ public class User implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return name.equals(user.name);
+        return name.contains(user.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idUser,name);
+        return Objects.hash(idUser, name);
     }
 }

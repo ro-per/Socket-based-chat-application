@@ -1,8 +1,8 @@
 package server;
 
 import com.sun.istack.internal.Nullable;
+import server.User.User;
 import server.messages.Message;
-import server.messages.MessageType;
 
 import java.io.*;
 import java.net.Socket;
@@ -21,7 +21,7 @@ public class ServerThread extends Thread {
     private User user;
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
-    public ServerThread(Socket socket,MessageHandler handler) {
+    public ServerThread(Socket socket, MessageHandler handler) {
         super("MultiServerThread");
         this.socket = socket;
         this.handler = handler;

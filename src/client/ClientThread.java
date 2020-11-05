@@ -4,8 +4,7 @@ import com.sun.istack.internal.Nullable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import server.ServerThread;
-import server.User;
+import server.User.User;
 import server.messages.Message;
 
 import java.io.*;
