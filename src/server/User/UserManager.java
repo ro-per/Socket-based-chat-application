@@ -46,9 +46,12 @@ public class UserManager {
 
     }
 
-    //TODO later nodig om users te visualisern
-    public Set<User> getUsers() {
-        return userServerThreadMap.keySet();
+    public ArrayList<String> getUserStrings() {
+        ArrayList<String> userStrings = new ArrayList<>();
+        for (User u: userServerThreadMap.keySet()){
+            userStrings.add(u.getName());
+        }
+        return userStrings;
     }
 
     public ServerThread getServerThreadByString(String userString) {
@@ -63,8 +66,6 @@ public class UserManager {
     }
 
     public Collection<ServerThread> getServerThreads() {
-
-
         return userServerThreadMap.values();
     }
 

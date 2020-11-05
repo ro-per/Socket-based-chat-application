@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import server.User.User;
 import server.messages.Message;
+import server.messages.MessageType;
 
 import java.io.*;
 import java.net.Socket;
@@ -30,6 +31,7 @@ public class ClientThread implements Runnable {
         this.server = server;
         this.user = user;
         this.messages = FXCollections.observableArrayList();
+        this.users = FXCollections.observableArrayList();
     }
 
     /* ----------------------------- RUN ----------------------------- */
@@ -42,7 +44,14 @@ public class ClientThread implements Runnable {
 
             while (isRunning) {
                 Message message = (Message) input.readObject();
+                //IF message = joined controller.setUserList(message)
+
                 Platform.runLater(() -> messages.add(message.getText()));
+
+                if (message.getType() == MessageType.BROADCAST) {
+                    Platform.runLater(() -> users.addAll(message.getActiveUsers()));
+                }
+
             }
 
         } catch (IOException | ClassNotFoundException e) {
@@ -54,6 +63,11 @@ public class ClientThread implements Runnable {
     public ObservableList<String> getMessages() {
         return messages;
     }
+
+    public ObservableList<String> getUsers() {
+        return users;
+    }
+
 
     public void sendToServer(Message msg) throws IOException {
         msg.setSender(user);

@@ -99,6 +99,10 @@ public class ChatClient {
     public ObservableList<String> getMessages() {
         return clientThread.getMessages();
     }
+    public ObservableList<String> getUsers() {
+        return clientThread.getUsers();
+    }
+
 
     public User getUser() {
         return user;

@@ -4,6 +4,7 @@ import server.User.User;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
@@ -14,6 +15,7 @@ public class Message implements Serializable {
     private final String text;
     private String receiver;
     private final Timestamp timestamp;
+    private ArrayList<String> activeUsers;
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
     public Message(User sender, MessageType messageType, String text) {
@@ -72,11 +74,18 @@ public class Message implements Serializable {
         }
     }
 
+    public ArrayList<String> getActiveUsers() {
+        return activeUsers;
+    }
+
     /* ----------------------------- SETTERS ----------------------------- */
     public void setSender(User user) {
         this.sender = user;
     }
 
+    public void setActiveUsers(ArrayList<String> activeUsers) {
+        this.activeUsers = activeUsers;
+    }
 
     /* ----------------------------- OVERRIDE ----------------------------- */
     @Override

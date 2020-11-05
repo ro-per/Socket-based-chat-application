@@ -34,7 +34,7 @@ public class ChatService {
             thread.printOnOutputStream(msg);*/
 
             // NOTIFY OTHER USERS
-            sendUpdateMessage(user, "Connected");
+            updateUsers(user, "Connected");
 
 
         } catch (DuplicateUsernameException e) {
@@ -52,6 +52,8 @@ public class ChatService {
 
     public void sendBroadcastMSG(Message msg) throws IOException {
         Collection<ServerThread> threads = manager.getServerThreads();
+        msg.setActiveUsers(manager.getUserStrings()); //SEND UPDATE ABOUT USERS
+
         if (!threads.isEmpty()) {
             for (ServerThread thread : manager.getServerThreads()) { // each client has own server thread
                 thread.printOnOutputStream(msg);
@@ -60,12 +62,12 @@ public class ChatService {
         }
     }
 
-    private void sendUpdateMessage(User user, String info) throws IOException {
+    private void updateUsers(User user, String info) throws IOException {
         String text = user.getName() + " is " + info;
         // NOTIFY OTHER USERS
-        Message leaveMessage = new Message(MessageType.BROADCAST, text);
-        leaveMessage.setSender(serverUser);
-        sendBroadcastMSG(leaveMessage);
+        Message msg = new Message(MessageType.BROADCAST, text);
+        msg.setSender(serverUser);
+        sendBroadcastMSG(msg);
 
         logger.info(text);
     }
@@ -77,7 +79,7 @@ public class ChatService {
             manager.disconnectUser(user);
 
             // NOTIFY OTHER USERS
-            sendUpdateMessage(user, "Disconnected");
+            updateUsers(user, "Disconnected");
 
             thread.stopThread();
 

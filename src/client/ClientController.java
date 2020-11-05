@@ -1,6 +1,8 @@
 package client;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -8,6 +10,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.effect.Lighting;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import server.User.User;
+import server.messages.Message;
 
 import java.io.IOException;
 
@@ -28,6 +32,10 @@ public class ClientController {
     private ListView chatPane;
     @FXML
     private ListView userPane;
+
+    @FXML
+    private ListView userList;
+
     /* ----------------------------- ERROR MESSAGES ----------------------------- */
     static final String ERROR_EMPTY_USER = "Required !";
     static final String ERROR_EMPTY_SERVER = "Required ! !";
@@ -75,6 +83,7 @@ public class ClientController {
         client = new ChatClient(userName, serverName, portNumber);
         if (client.start()) {
             chatPane.setItems(client.getMessages());
+            userPane.setItems(client.getUsers());
             client.connectUser(userName);
         }
     }
@@ -119,6 +128,13 @@ public class ClientController {
         }
         // only got here if we didn't return false
         return true;
+    }
+
+    public void setUserList(Message msg) {
+        Platform.runLater(() -> {
+            ObservableList<String> users = FXCollections.observableList(msg.getActiveUsers()); //Arraylist
+            userList.setItems(users);
+        });
     }
 
     /* ----------------------------- KEY PRESSED ----------------------------- */
