@@ -1,6 +1,6 @@
 package server.messages;
 
-import server.User.User;
+import server.user.User;
 
 import java.io.Serializable;
 import java.sql.Timestamp;

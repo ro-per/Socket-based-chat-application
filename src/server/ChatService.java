@@ -1,8 +1,8 @@
 package server;
 
 import com.sun.istack.internal.Nullable;
-import server.User.User;
-import server.User.UserManager;
+import server.user.User;
+import server.user.UserManager;
 import server.exceptions.DuplicateUsernameException;
 import server.exceptions.UserNotFoundException;
 import server.messages.Message;
@@ -30,11 +30,11 @@ public class ChatService {
         try {
             manager.connectUser(user, thread);
 
-/*            Message msg = new Message(serverUser,MessageType.PRIVATE, "Welcome to the chat!");
+/*          Message msg = new Message(serverUser,MessageType.PRIVATE, "Welcome to the chat!");
             thread.printOnOutputStream(msg);*/
 
             // NOTIFY OTHER USERS
-            updateUsers(user, "connected");
+            notifyUsers(user, "connected");
 
 
         } catch (DuplicateUsernameException e) {
@@ -44,15 +44,15 @@ public class ChatService {
         }
     }
 
-    public void sendPrivateMSG(Message msg) throws IOException {
-        ServerThread thread = manager.getServerThreadByString(msg.getReceiverString());
+    public void sendPrivateMsg(Message msg) throws IOException {
+        ServerThread thread = manager.getServerThreadByUsername(msg.getReceiverString());
         thread.printOnOutputStream(msg);
 
     }
 
-    public void sendBroadcastMSG(Message msg) throws IOException {
+    public void sendBroadcastMsg(Message msg) throws IOException {
         Collection<ServerThread> threads = manager.getServerThreads();
-        msg.setActiveUsers(manager.getUserStrings()); //SEND UPDATE ABOUT USERS
+        msg.setActiveUsers(manager.getUsernames()); //SEND UPDATE ABOUT USERS
 
         if (!threads.isEmpty()) {
             for (ServerThread thread : manager.getServerThreads()) { // each client has own server thread
@@ -62,11 +62,11 @@ public class ChatService {
         }
     }
 
-    private void updateUsers(User user, String info) throws IOException {
+    private void notifyUsers(User user, String info) throws IOException {
         // NOTIFY OTHER USERS
         Message msg1 = new Message(MessageType.BROADCAST, user.getName() + " is " + info);
         msg1.setSender(serverUser);
-        sendBroadcastMSG(msg1);
+        sendBroadcastMsg(msg1);
 
     }
 
@@ -77,7 +77,7 @@ public class ChatService {
             manager.disconnectUser(user);
 
             // NOTIFY OTHER USERS
-            updateUsers(user, "disconnected");
+            notifyUsers(user, "disconnected");
 
             thread.stopThread();
 

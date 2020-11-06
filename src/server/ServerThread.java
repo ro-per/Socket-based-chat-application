@@ -1,7 +1,7 @@
 package server;
 
 import com.sun.istack.internal.Nullable;
-import server.User.User;
+import server.user.User;
 import server.messages.Message;
 
 import java.io.*;

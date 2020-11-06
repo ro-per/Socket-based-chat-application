@@ -1,4 +1,4 @@
-package server.User;
+package server.user;
 
 import server.ServerThread;
 import server.exceptions.DuplicateUsernameException;
@@ -46,18 +46,18 @@ public class UserManager {
 
     }
 
-    public Set<String> getUserStrings() {
-        Set<String> userStrings = new HashSet<>();
+    public Set<String> getUsernames() {
+        Set<String> usernames = new HashSet<>();
         for (User u: userServerThreadMap.keySet()){
-            userStrings.add(u.getName());
+            usernames.add(u.getName());
         }
-        return userStrings;
+        return usernames;
     }
 
-    public ServerThread getServerThreadByString(String userString) {
+    public ServerThread getServerThreadByUsername(String username) {
         User u = null;
         for (User user : userServerThreadMap.keySet()) {
-            if (user.compareWithString(userString)) {
+            if (user.compareWithString(username)) {
                 u = user;
             }
         }
