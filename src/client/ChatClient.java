@@ -99,6 +99,7 @@ public class ChatClient {
     public ObservableList<String> getMessages() {
         return clientThread.getMessages();
     }
+
     public ObservableList<String> getUsers() {
         return clientThread.getUsers();
     }
@@ -127,4 +128,5 @@ public class ChatClient {
     public void setClientThread(ClientThread clientThread) {
         this.clientThread = clientThread;
     }
+
 }

@@ -34,7 +34,7 @@ public class ChatService {
             thread.printOnOutputStream(msg);*/
 
             // NOTIFY OTHER USERS
-            updateUsers(user, "Connected");
+            updateUsers(user, "connected");
 
 
         } catch (DuplicateUsernameException e) {
@@ -63,13 +63,11 @@ public class ChatService {
     }
 
     private void updateUsers(User user, String info) throws IOException {
-        String text = user.getName() + " is " + info;
         // NOTIFY OTHER USERS
-        Message msg = new Message(MessageType.BROADCAST, text);
-        msg.setSender(serverUser);
-        sendBroadcastMSG(msg);
+        Message msg1 = new Message(MessageType.BROADCAST, user.getName() + " is " + info);
+        msg1.setSender(serverUser);
+        sendBroadcastMSG(msg1);
 
-        logger.info(text);
     }
 
 
@@ -79,7 +77,7 @@ public class ChatService {
             manager.disconnectUser(user);
 
             // NOTIFY OTHER USERS
-            updateUsers(user, "Disconnected");
+            updateUsers(user, "disconnected");
 
             thread.stopThread();
 

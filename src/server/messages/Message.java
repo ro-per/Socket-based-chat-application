@@ -4,45 +4,45 @@ import server.User.User;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 public class Message implements Serializable {
 
     private User sender;
     private final MessageType messageType;
-    private final String text;
+    private final String content;
     private String receiver;
     private final Timestamp timestamp;
-    private ArrayList<String> activeUsers;
+    private Set<String> activeUsers;
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
     public Message(User sender, MessageType messageType, String text) {
         this.sender = sender;
         this.messageType = messageType;
-        this.text = text;
+        this.content = text;
         this.timestamp = new Timestamp(new Date().getTime());
     }
 
     /* CONNECT / DISCONNECT MESSAGE */
     public Message(MessageType messageType) {
         this.messageType = messageType;
-        this.text = "I want to disconnect !!!";
+        this.content = "I want to disconnect !!!";
         this.timestamp = new Timestamp(new Date().getTime());
     }
 
     public Message(User sender, MessageType messageType, String text, String receiver) {
         this.sender = sender;
         this.messageType = messageType;
-        this.text = text;
+        this.content = text;
         this.receiver = receiver;
         this.timestamp = new Timestamp(new Date().getTime());
     }
 
     public Message(MessageType messageType, String text) {
         this.messageType = messageType;
-        this.text = text;
+        this.content = text;
         this.timestamp = new Timestamp(new Date().getTime());
     }
 
@@ -63,18 +63,18 @@ public class Message implements Serializable {
         return timestamp;
     }
 
-    public String getText() {
+    public String getContent() {
         switch (messageType) {
             case BROADCAST:
-                return "[BROADCAST:" + sender.getName() + "]: " + text;
+                return "[BROADCAST:" + sender.getName() + "]: " + content;
             case PRIVATE:
-                return "[PRIVATE:" + sender.getName() + "]: " + text;
+                return "[PRIVATE:" + sender.getName() + "]: " + content;
             default:
-                return text;
+                return content;
         }
     }
 
-    public ArrayList<String> getActiveUsers() {
+    public Set<String> getActiveUsers() {
         return activeUsers;
     }
 
@@ -83,7 +83,7 @@ public class Message implements Serializable {
         this.sender = user;
     }
 
-    public void setActiveUsers(ArrayList<String> activeUsers) {
+    public void setActiveUsers(Set<String> activeUsers) {
         this.activeUsers = activeUsers;
     }
 

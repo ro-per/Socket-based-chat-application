@@ -55,7 +55,7 @@ public class ServerThread extends Thread {
         while (isRunning) {
             Message inMessage = (Message) input.readObject();
             if (inMessage != null) {
-                info(inMessage.getType() + " - " + inMessage.getSender() + ": " + inMessage.getText());
+                info(inMessage.getType() + " - " + inMessage.getSender() + ": " + inMessage.getContent());
                 handler.processMessage(inMessage, this);
             }
         }

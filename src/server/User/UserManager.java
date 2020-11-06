@@ -46,8 +46,8 @@ public class UserManager {
 
     }
 
-    public ArrayList<String> getUserStrings() {
-        ArrayList<String> userStrings = new ArrayList<>();
+    public Set<String> getUserStrings() {
+        Set<String> userStrings = new HashSet<>();
         for (User u: userServerThreadMap.keySet()){
             userStrings.add(u.getName());
         }

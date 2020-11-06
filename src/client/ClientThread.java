@@ -46,10 +46,13 @@ public class ClientThread implements Runnable {
                 Message message = (Message) input.readObject();
                 //IF message = joined controller.setUserList(message)
 
-                Platform.runLater(() -> messages.add(message.getText()));
+                Platform.runLater(() -> messages.add(message.getContent()));
 
                 if (message.getType() == MessageType.BROADCAST) {
-                    Platform.runLater(() -> users.addAll(message.getActiveUsers()));
+                    Platform.runLater(() -> {
+                        //TODO maak de lijst eerst leeg
+                        users.addAll(message.getActiveUsers());
+                    });
                 }
 
             }
