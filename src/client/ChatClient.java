@@ -56,7 +56,7 @@ public class ChatClient {
         }
     }
 
-    public void sendBroadcastMSG(String text) {
+    public void sendBroadcastMsg(String text) {
         Message message = new Message(user, MessageType.BROADCAST, text); //BROADCAST does not need receiver
         try {
             info("Broadcasting...");
@@ -66,7 +66,7 @@ public class ChatClient {
         }
     }
 
-    public void sendPrivateMSG(String text, String receiver) {
+    public void sendPrivateMsg(String text, String receiver) {
         Message message = new Message(user, MessageType.PRIVATE, text, receiver); // PRIVATE has 1 receiver
         try {
             info("Sending private message ...");
@@ -83,7 +83,7 @@ public class ChatClient {
             info("Leaving...");
             clientThread.stop();
         } catch (IOException e) {
-            error("Could not connect with the server.");
+            error("Failed to disconnect from server");
         }
     }
 
