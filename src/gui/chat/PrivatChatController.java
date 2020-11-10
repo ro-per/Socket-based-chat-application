@@ -40,7 +40,7 @@ public class PrivatChatController {
     public void sendPrivateAction() throws IOException {
         String text = msgField.getText();
         if (!text.isEmpty()) {
-            chatClient.sendPrivateMSG(text, correspondent);
+            ChatApplication.chatClient.sendPrivateMsg(text, correspondent);
             msgField.clear();
         } else {
             flashTextField(this.msgField);
@@ -50,17 +50,8 @@ public class PrivatChatController {
     /* ----------------------------- SETTERS ----------------------------- */
     public void setChatProperties() {
         this.chatTitle.setText("Private (with " + correspondent + ") " + ChatApplication.title);
-        this.send_button.setText("Send to "+correspondent);
+        this.send_button.setText("Send to " + correspondent);
     }
-
-    public void setChatPane() {
-
-    }
-
-    public void setUserPane() {
-
-    }
-
 
     /* ----------------------------- KEY PRESSED ----------------------------- */
     public void keyPressed(KeyEvent ke) throws IOException {
@@ -85,6 +76,6 @@ public class PrivatChatController {
     }
 
     public void setChatClient(ChatClient chatClient) {
-        this.chatClient=chatClient;
+        this.chatClient = chatClient;
     }
 }

@@ -128,5 +128,4 @@ public class ChatClient {
     public void setClientThread(ClientThread clientThread) {
         this.clientThread = clientThread;
     }
-
 }

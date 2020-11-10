@@ -40,7 +40,7 @@ public class PublicChatController {
     public void sendBroadcastAction() throws IOException {
         String text = msgField.getText();
         if (!text.isEmpty()) {
-            ChatApplication.chatClient.sendBroadcastMSG(text);
+            ChatApplication.chatClient.sendBroadcastMsg(text);
             msgField.clear();
         } else {
             flashTextField(this.msgField);
