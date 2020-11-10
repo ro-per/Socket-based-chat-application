@@ -1,55 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
-            prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="client.ClientController">
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" style="-fx-background-color: #99ccff;" xmlns="http://javafx.com/javafx/11.0.2"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.chat.PublicChatController">
     <top>
-        <HBox fx:id="login_box" alignment="TOP_RIGHT" prefHeight="30.0" AnchorPane.bottomAnchor="0.0"
-              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane BorderPane.alignment="CENTER">
             <children>
-                <TextField fx:id="userField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                           onMouseClicked="#userNameClicked" promptText="username">
-                    <HBox.margin>
-                        <Insets left="5.0" right="5.0"/>
-                    </HBox.margin>
-                </TextField>
-                <TextField fx:id="serverField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                           onMouseClicked="#serverClicked" promptText="server" text="localhost">
-                    <HBox.margin>
-                        <Insets left="5.0" right="5.0"/>
-                    </HBox.margin>
-                </TextField>
-                <TextField fx:id="portField" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                           onMouseClicked="#portClicked" promptText="port" text="1000">
-                    <HBox.margin>
-                        <Insets left="5.0" right="5.0"/>
-                    </HBox.margin>
-                </TextField>
-                <Button fx:id="connectButton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                        mnemonicParsing="false" onAction="#connectButtonAction" prefWidth="80.0" text="Connect">
-                    <HBox.margin>
-                        <Insets/>
-                    </HBox.margin>
-                </Button>
+                <Label fx:id="chatTitle" maxHeight="-Infinity" prefHeight="30.0" prefWidth="80.0" text="Chat category"
+                       textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
             </children>
-        </HBox>
+        </AnchorPane>
     </top>
     <left>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0"
-              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              onMouseClicked="#clickUserName" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
             <children>
                 <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308"
-                            maxWidth="1.7976931348623157E308" pannable="true" prefHeight="496.0" vbarPolicy="ALWAYS"
-                            vmin="1.0" vvalue="1.0" VBox.vgrow="ALWAYS">
+                            maxWidth="1.7976931348623157E308" onMouseClicked="#clickUserName" pannable="true"
+                            prefHeight="496.0" vbarPolicy="ALWAYS" vmin="1.0" vvalue="1.0" VBox.vgrow="ALWAYS">
                     <content>
                         <ListView fx:id="userPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                                   prefHeight="200.0" prefWidth="200.0"/>
                     </content>
                 </ScrollPane>
             </children>
+            <padding>
+                <Insets bottom="2.5" left="2.5" right="2.5" top="2.5"/>
+            </padding>
         </VBox>
     </left>
 
@@ -66,6 +48,9 @@
                     </content>
                 </ScrollPane>
             </children>
+            <padding>
+                <Insets bottom="2.5" left="2.5" right="2.5" top="2.5"/>
+            </padding>
         </VBox>
     </center>
 
@@ -83,15 +68,17 @@
                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
                     </children>
                 </AnchorPane>
-                <Button fx:id="send_button_private" maxHeight="-Infinity" mnemonicParsing="false"
-                        onAction="#sendPrivateAction" prefHeight="30.0" prefWidth="80.0" text="private: testuser"
-                        textAlignment="CENTER"/>
-
                 <Button fx:id="send_button_broadcast" maxHeight="-Infinity" mnemonicParsing="false"
                         onAction="#sendBroadcastAction" prefHeight="30.0" prefWidth="80.0" text="broadcast"
                         textAlignment="CENTER"/>
             </children>
+            <padding>
+                <Insets bottom="2.5" left="2.5" right="2.5" top="2.5"/>
+            </padding>
         </HBox>
 
     </bottom>
+    <padding>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+    </padding>
 </BorderPane>
