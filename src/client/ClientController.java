@@ -87,7 +87,7 @@ public class ClientController {
     public void sendBroadcastAction() throws IOException {
         String text = msgField.getText();
         if (!text.isEmpty()) {
-            client.sendBroadcastMSG(text);
+            client.sendBroadcastMsg(text);
             msgField.clear();
         } else {
             flashTextField(this.msgField);
@@ -97,20 +97,18 @@ public class ClientController {
     public void sendPrivateAction() throws IOException {
         String text = msgField.getText();
         if (!text.isEmpty()) {
-            client.sendPrivateMSG(text, "testuser"); //TODO HARDCODED
+            client.sendPrivateMsg(text, "testuser"); //TODO HARDCODED
             msgField.clear();
         } else {
             flashTextField(this.msgField);
         }
     }
 
-    public void exit() throws IOException {
+    public void exit() {
         //Only  perform leave is chatclient is started
         if (client != null) {
             client.leave();
         }
-
-
         Platform.exit();
         System.exit(0);
     }
