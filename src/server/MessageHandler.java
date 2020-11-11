@@ -18,7 +18,7 @@ public class MessageHandler {
                 service.sendPrivateMsg(msg);
                 break;
             case BROADCAST:
-                service.sendBroadcastMsg(msg);
+                service.broadCastMsg(msg);
                 break;
             case CONNECT:
                 service.connectUser(msg.getSender(), thread);

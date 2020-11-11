@@ -9,6 +9,7 @@ import server.messages.Message;
 import server.messages.MessageType;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,7 +21,8 @@ public class ClientThread implements Runnable {
     private volatile boolean isRunning = true;
     private final Socket socket;
     private final String server;
-    private ObservableList<String> messages;
+    private ObservableList<String> messagesPublic;
+    private ObservableList<String> messagesPrivate;
     private ObservableList<String> users;
     private final User user;
     private static ObjectOutputStream oos;
@@ -30,7 +32,8 @@ public class ClientThread implements Runnable {
         this.socket = socket;
         this.server = server;
         this.user = user;
-        this.messages = FXCollections.observableArrayList();
+        this.messagesPublic = FXCollections.observableArrayList();
+        this.messagesPrivate = FXCollections.observableArrayList();
         this.users = FXCollections.observableArrayList();
     }
 
@@ -46,13 +49,37 @@ public class ClientThread implements Runnable {
                 Message message = (Message) input.readObject();
                 //IF message = joined controller.setUserList(message)
 
-                Platform.runLater(() -> messages.add(message.getContent()));
 
-                if (message.getType() == MessageType.BROADCAST) {
-                    Platform.runLater(() -> {
-                        //TODO maak de lijst eerst leeg
-                        users.addAll(message.getActiveUsers());
-                    });
+                switch (message.getType()) {
+                    case CONNECT:
+                        Platform.runLater(() -> users.addAll(message.getContent()));
+                        break;
+                    case DISCONNECT:
+                        Platform.runLater(() -> users.removeAll(message.getContent()));
+                        break;
+                    case PRIVATE:
+                        if (message.getSender().toString() == "Server") {
+                            Platform.runLater(() -> users.addAll(message.getActiveUsers()));
+
+                        } else {
+                            ChatApplication.launchPrivateChat(message.getSender().toString());
+
+                            Platform.runLater(() -> messagesPrivate.add(message.getContent()));
+                        }
+                        break;
+                    case BROADCAST:
+                        Platform.runLater(() -> messagesPublic.add(message.getContent()));
+                        break;
+
+                    case ERROR:
+                        Platform.runLater(() -> {
+                            try {
+                                ChatApplication.showLoginOnPublicStage(message.getContent());
+                            } catch (MalformedURLException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                        break;
                 }
 
             }
@@ -63,8 +90,16 @@ public class ClientThread implements Runnable {
         }
     }
 
-    public ObservableList<String> getMessages() {
-        return messages;
+    public void addSelf(String username) {
+        System.out.println("test");
+    }
+
+    public ObservableList<String> getMessagesPublic() {
+        return messagesPublic;
+    }
+
+    public ObservableList<String> getMessagesPrivate() {
+        return messagesPublic;
     }
 
     public ObservableList<String> getUsers() {

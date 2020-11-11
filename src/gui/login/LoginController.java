@@ -23,7 +23,6 @@ public class LoginController {
     private TextField portField;
 
 
-
     /* ----------------------------- ERROR MESSAGES ----------------------------- */
     static final String ERROR_EMPTY_USER = "Required !";
     static final String ERROR_EMPTY_SERVER = "Required ! !";
@@ -34,6 +33,7 @@ public class LoginController {
     /* ----------------------------- METHODS ----------------------------- */
     public void initialize() {
         this.chatApplication = ChatApplication.getApplication();
+        userField.setText("romeo");  //TODO REMOVE !!!
     }
 
     public void connectButtonAction() throws IOException {
@@ -72,6 +72,7 @@ public class LoginController {
         }
 
     }
+
     public static boolean isInteger(String s) {
         try {
             Integer.parseInt(s);

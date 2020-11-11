@@ -34,14 +34,39 @@ public class ChatService {
             thread.printOnOutputStream(msg);*/
 
             // NOTIFY OTHER USERS
-            notifyUsers(user, "connected");
+            //notifyUsers(user, "connected");
 
+            //ADD USER TO USER LISTS
+            Message msg1 = new Message(MessageType.CONNECT, user.getName() );
+            msg1.setSender(serverUser);
+            broadCastMsg(msg1);
 
         } catch (DuplicateUsernameException e) {
-            Message msg = new Message(serverUser, MessageType.PRIVATE, "Username is already been used.");
+            Message msg = new Message(serverUser, MessageType.ERROR, "Username is already been used.");
             thread.printOnOutputStream(msg);
             info(user.getName() + " failed to connect to server.");
         }
+    }
+
+    public void disconnectUser(User user, ServerThread thread) {
+        try {
+            info(user.getName() + " is leaving the chat.");
+            manager.disconnectUser(user);
+
+            // NOTIFY OTHER USERS
+            //notifyUsers(user, "disconnected");
+
+            //REMOVE USERS FROM USER LISTS
+            Message msg1 = new Message(MessageType.DISCONNECT, user.getName() );
+            msg1.setSender(serverUser);
+            broadCastMsg(msg1);
+
+            thread.stopThread();
+
+        } catch (UserNotFoundException | IOException e) {
+            error(e.getMessage());
+        }
+
     }
 
     public void sendPrivateMsg(Message msg) throws IOException {
@@ -50,9 +75,8 @@ public class ChatService {
 
     }
 
-    public void sendBroadcastMsg(Message msg) throws IOException {
+    public void broadCastMsg(Message msg) throws IOException {
         Collection<ServerThread> threads = manager.getServerThreads();
-        msg.setActiveUsers(manager.getUsernames()); //SEND UPDATE ABOUT USERS
 
         if (!threads.isEmpty()) {
             for (ServerThread thread : manager.getServerThreads()) { // each client has own server thread
@@ -66,26 +90,12 @@ public class ChatService {
         // NOTIFY OTHER USERS
         Message msg1 = new Message(MessageType.BROADCAST, user.getName() + " is " + info);
         msg1.setSender(serverUser);
-        sendBroadcastMsg(msg1);
+        broadCastMsg(msg1);
 
     }
 
 
-    public void disconnectUser(User user, ServerThread thread) {
-        try {
-            info(user.getName() + " is leaving the chat.");
-            manager.disconnectUser(user);
 
-            // NOTIFY OTHER USERS
-            notifyUsers(user, "disconnected");
-
-            thread.stopThread();
-
-        } catch (UserNotFoundException | IOException e) {
-            error(e.getMessage());
-        }
-
-    }
 
     private static void info(String msg, @Nullable Object... params) {
         logger.log(Level.INFO, msg, params);
@@ -94,4 +104,5 @@ public class ChatService {
     private static void error(String msg, @Nullable Object... params) {
         logger.log(Level.WARNING, msg, params);
     }
+
 }

@@ -14,24 +14,35 @@ import javafx.scene.input.KeyEvent;
 import java.io.IOException;
 
 public class PrivatChatController {
-    private ChatClient chatClient = null;
-    private ChatApplication chatApplication;
-    private final String correspondent;
+
+    private String correspondent;
     /* ----------------------------- @FXML ----------------------------- */
     @FXML
     private TextField msgField;
     @FXML
     private Label chatTitle;
     @FXML
+    private ListView chatPanePrivate;
+    @FXML
     private Button send_button;
-    @FXML
-    private ListView chatPane;
-    @FXML
-    private ListView userPane;
-    @FXML
-    private ListView userList;
+
+
+    public void initialize() {
+
+        chatPanePrivate.setItems(ChatApplication.chatClient.getPrivateMessages());
+
+        this.correspondent=ChatApplication.correspondent;
+
+        String loggedInAs = "Logged in as (" + ChatApplication.chatClient.getUser().toString() + ")";
+        String chattingTo = "your talking to (" + correspondent + ")";
+        chatTitle.setText(loggedInAs + " | " + chattingTo);
+
+    }
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
+    public PrivatChatController() {
+    }
+
     public PrivatChatController(String correspondent) {
         this.correspondent = correspondent;
     }
@@ -45,12 +56,6 @@ public class PrivatChatController {
         } else {
             flashTextField(this.msgField);
         }
-    }
-
-    /* ----------------------------- SETTERS ----------------------------- */
-    public void setChatProperties() {
-        this.chatTitle.setText("Private (with " + correspondent + ") " + ChatApplication.title);
-        this.send_button.setText("Send to " + correspondent);
     }
 
     /* ----------------------------- KEY PRESSED ----------------------------- */
@@ -75,7 +80,4 @@ public class PrivatChatController {
         //TODO close private window
     }
 
-    public void setChatClient(ChatClient chatClient) {
-        this.chatClient = chatClient;
-    }
 }

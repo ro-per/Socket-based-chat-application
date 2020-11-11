@@ -10,22 +10,22 @@
     <top>
         <AnchorPane BorderPane.alignment="CENTER">
             <children>
-                <Label fx:id="chatTitle" maxHeight="-Infinity" prefHeight="30.0" prefWidth="80.0" text="Chat category"
-                       textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                <Label fx:id="chatTitle" maxHeight="-Infinity" prefHeight="30.0" text="Chat title"
+                       textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                       AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
             </children>
         </AnchorPane>
     </top>
     <left>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" AnchorPane.bottomAnchor="0.0"
-              onMouseClicked="#clickUserName" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-              AnchorPane.topAnchor="0.0">
+              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxHeight="1.7976931348623157E308"
-                            maxWidth="1.7976931348623157E308" onMouseClicked="#clickUserName" pannable="true"
-                            prefHeight="496.0" vbarPolicy="ALWAYS" vmin="1.0" vvalue="1.0" VBox.vgrow="ALWAYS">
+                            maxWidth="1.7976931348623157E308" pannable="true" prefHeight="496.0" vbarPolicy="ALWAYS"
+                            vmin="1.0" vvalue="1.0" VBox.vgrow="ALWAYS">
                     <content>
                         <ListView fx:id="userPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
-                                  prefHeight="200.0" prefWidth="200.0"/>
+                                  onMouseClicked="#chooseUser" prefHeight="200.0" prefWidth="200.0"/>
                     </content>
                 </ScrollPane>
             </children>
@@ -43,7 +43,7 @@
                             maxWidth="1.7976931348623157E308" pannable="true" prefHeight="496.0" vbarPolicy="ALWAYS"
                             vmin="1.0" vvalue="1.0" VBox.vgrow="ALWAYS">
                     <content>
-                        <ListView fx:id="chatPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+                        <ListView fx:id="chatPanePublic" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                                   prefHeight="200.0" prefWidth="200.0"/>
                     </content>
                 </ScrollPane>

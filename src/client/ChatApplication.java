@@ -6,6 +6,7 @@ import gui.login.LoginController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -15,8 +16,8 @@ import java.net.URL;
 
 public class ChatApplication extends Application {
 
-    private static Stage stage;
-    private static Scene scene;
+    private static Stage publicStage;
+    private static Scene publicScene;
 
     private static BorderPane borderPane;
     private static ChatApplication chatApplication;
@@ -28,7 +29,9 @@ public class ChatApplication extends Application {
     private static URL loginFXML, publicFXML, privateFXML;
 
     public static final String title = "Socket-based Chat service";
+    public static FXMLLoader fxmlLoader;
 
+    public static String correspondent;
 
     public ChatApplication() throws MalformedURLException {
         //Stage attributes
@@ -51,62 +54,96 @@ public class ChatApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+
         //Init stage
-        stage = primaryStage;
-        stage.setTitle(title);
+        publicStage = primaryStage;
+        publicStage.setTitle(title);
         try {
-            showLogin();
+            showLoginOnPublicStage("Welcome to socket chat");
         } catch (Exception e) {
             System.out.println(e.getStackTrace());
         }
     }
 
-    public void showLogin() throws MalformedURLException {
-        loadStage(loginFXML);
+    public static void showLoginOnPublicStage(String title) throws MalformedURLException {
+        fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(loginFXML);
+        try{
+            borderPane = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        publicScene = new Scene(borderPane);
+        publicStage.setScene(publicScene);
 
-        stage.setOnShowing(event -> {
-            setStagePropertiesToLogin();
+        publicStage.setOnShowing(event -> {
+            publicStage.setResizable(false);
+            publicStage.setFullScreen(false);
         });
-        stage.show();
+        publicStage.setTitle(title);
+        publicStage.show();
     }
 
-    public static void showPublicChat() throws MalformedURLException {
+    public static void launchPublicChat() throws MalformedURLException {
+
         publicChatController.setChatClient(chatClient);
-        loadStage(publicFXML);
 
+        fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(publicFXML);
+        try{
+            borderPane = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        publicScene = new Scene(borderPane);
+        publicStage.setScene(publicScene);
 
-
-        stage.setOnCloseRequest(event -> {
+        publicStage.setOnCloseRequest(event -> {
             try {
                 publicChatController.closePublicChat();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
-
-
-        stage.show();
+        publicStage.setTitle("Group Chat");
+        publicStage.show();
     }
 
-    public static void showPrivateChat(String otherUser) throws MalformedURLException {
-        PrivatChatController privatChatController = new PrivatChatController(otherUser);
-        privatChatController.setChatClient(chatClient);
+    public static void launchPrivateChat(String user) throws MalformedURLException {
+        Stage st = new Stage();
+        Scene sc;
+        BorderPane borderPane = null;
+        ChatApplication.correspondent=user;
+        
+        PrivatChatController privatChatController = new PrivatChatController();
 
-        loadStage(privateFXML);
+        fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(privateFXML);
+        try{
+            borderPane = fxmlLoader.load();
+            sc = new Scene(borderPane);
+            st.setScene(sc);
 
-        stage.setOnCloseRequest(event -> {
-            try {
-                privatChatController.closePrivateChat();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        stage.show();
+            st.setOnCloseRequest(event -> {
+                try {
+                    privatChatController.closePrivateChat();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            st.setTitle("Private Chat");
+            st.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
     }
 
 
-    public static void loadStage(URL fxml) {
-        FXMLLoader fxmlLoader = new FXMLLoader();
+   /* public static void loadStage(URL fxml) {
+
         fxmlLoader.setLocation(fxml);
         try {
             borderPane = fxmlLoader.load();
@@ -116,19 +153,18 @@ public class ChatApplication extends Application {
             System.exit(1);
         }
         scene = new Scene(borderPane);
-        stage.setScene(scene);
-    }
+        publicStage.setScene(scene);
+    }*/
 
 
     public void setStagePropertiesToLogin() {
-        stage.setResizable(false);
-        stage.setFullScreen(false);
+
     }
 
     public static void setStagePropertiesToChat() {
-        stage.setResizable(true);
-        stage.setMaximized(true);
-        stage.setFullScreen(true);
+        publicStage.setResizable(true);
+        publicStage.setMaximized(true);
+        publicStage.setFullScreen(true);
 
 
     }
@@ -149,12 +185,13 @@ public class ChatApplication extends Application {
 //            chatPane.setItems();
 //            userPane.setItems(chatClient.getUsers());
 
-            showPublicChat();  // TODO - A
+
 
             chatClient.connectUser(userName);
 
-        }
+            launchPublicChat();  // TODO - A
 
+        }
 
 
     }

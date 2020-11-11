@@ -50,6 +50,7 @@ public class ChatClient {
         try {
             info("Trying to connect " + username);
             clientThread.sendToServer(message);
+//            clientThread.addSelf(username);   //TODO
 
         } catch (IOException e) {
             error("Could not connect with the server.");
@@ -96,10 +97,12 @@ public class ChatClient {
     }
     /* ----------------------------- GETTERS ----------------------------- */
 
-    public ObservableList<String> getMessages() {
-        return clientThread.getMessages();
+    public ObservableList<String> getPublicMessages() {
+        return clientThread.getMessagesPublic();
     }
-
+    public ObservableList<String> getPrivateMessages() {
+        return clientThread.getMessagesPrivate();
+    }
     public ObservableList<String> getUsers() {
         return clientThread.getUsers();
     }

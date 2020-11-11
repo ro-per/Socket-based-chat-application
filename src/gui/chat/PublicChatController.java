@@ -14,10 +14,11 @@ import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class PublicChatController {
     private ChatClient chatClient = null;
-    private ChatApplication chatApplication;
 
     /* ----------------------------- @FXML ----------------------------- */
     @FXML
@@ -25,14 +26,32 @@ public class PublicChatController {
     @FXML
     private Label chatTitle;
     @FXML
-    private ListView chatPane;
+    private ListView chatPanePublic;
     @FXML
-    private ListView userPane;
-    @FXML
-    private ListView userList;
+    private ListView<String> userPane;
+
+    int time;
+    Timer timer;
+
+    public void initialize() {
+        setPanes();
+
+        String loggedInAs = "Logged in as (" + ChatApplication.chatClient.getUser().toString() + ")";
+        chatTitle.setText(loggedInAs);// logged in as ...
+
+    }
+
+    private void setPanes(){
+        chatPanePublic.setItems(ChatApplication.chatClient.getPublicMessages());
+        userPane.setItems(ChatApplication.chatClient.getUsers());
+
+    }
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
     public PublicChatController() {
+        time = 0;
+        timer = new Timer();
+
     }
 
 
@@ -48,29 +67,20 @@ public class PublicChatController {
     }
 
 
-    /* ----------------------------- SETTERS ----------------------------- */
-
-    public void initialize(){
-        chatPane.setItems(ChatApplication.chatClient.getMessages());
-        userPane.setItems(ChatApplication.chatClient.getUsers());
-
-    }
-
     /* ----------------------------- KEY PRESSED ----------------------------- */
     public void keyPressed(KeyEvent ke) throws IOException {
         if (ke.getCode().equals(KeyCode.ENTER)) sendBroadcastAction();
     }
 
     @FXML
-    public void clickUserName(MouseEvent ae) throws MalformedURLException {
+    public void chooseUser() throws MalformedURLException {
 
-        //TODO !!!
-        /*Object selectedUser = userPane.getSelectionModel().getSelectedItem();
-        System.out.println(selectedUser.toString());*/
+        String selectedUser = userPane.getSelectionModel().getSelectedItem();
+        String currentUser = ChatApplication.chatClient.getUser().getName();
 
-//        showPrivateChat("romeo");
+        boolean self = selectedUser.equals(currentUser);
 
-
+        if (!self) ChatApplication.launchPrivateChat(selectedUser);
     }
 
     /* ----------------------------- FIELD PRESSED ----------------------------- */
@@ -99,21 +109,7 @@ public class PublicChatController {
     }
 
     public void setChatClient(ChatClient chatClient) {
-        this.chatClient=chatClient;
+        this.chatClient = chatClient;
     }
-
-
-
-/*
-    public void setUserList(Message msg) {
-        System.out.println("setUserList() method Enter");
-        Platform.runLater(() -> {
-            ObservableList<User> users = FXCollections.observableList(msg.getUsers());
-            userList.setItems(users);
-            userList.setCellFactory(new CellRenderer());
-            setOnlineLabel(String.valueOf(msg.getUserlist().size()));
-        });
-        System.out.println("setUserList() method Exit");
-    }*/
 
 }
