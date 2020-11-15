@@ -15,15 +15,15 @@ public class MessageHandler {
     public void processMessage(Message msg, ServerThread thread) throws IOException {
         switch (msg.getType()) {
             case PRIVATE:
-                service.sendPrivateMsg(msg);
+                service.sendPrivateMessage(msg);
                 break;
             case BROADCAST:
-                service.broadCastMsg(msg);
+                service.sendPublicMessage(msg);
                 break;
-            case CONNECT:
+            case REQUEST_CONNECT:
                 service.connectUser(msg.getSender(), thread);
                 break;
-            case DISCONNECT:
+            case REQUEST_DISCONNECT:
                 service.disconnectUser(msg.getSender(), thread);
                 break;
         }

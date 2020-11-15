@@ -45,7 +45,7 @@ public class ChatClient {
     }
 
     public void connectUser(String username) {
-        Message message = new Message(MessageType.CONNECT);
+        Message message = new Message(MessageType.REQUEST_CONNECT);
         message.setSender(new User(username));
         try {
             info("Trying to connect " + username);
@@ -78,7 +78,7 @@ public class ChatClient {
     }
 
     public void leave() {
-        Message message = new Message(MessageType.DISCONNECT);
+        Message message = new Message(MessageType.REQUEST_DISCONNECT);
         try {
             clientThread.sendToServer(message);
             info("Leaving...");

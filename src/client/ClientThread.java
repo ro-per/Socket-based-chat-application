@@ -6,7 +6,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import server.user.User;
 import server.messages.Message;
-import server.messages.MessageType;
 
 import java.io.*;
 import java.net.MalformedURLException;
@@ -49,35 +48,57 @@ public class ClientThread implements Runnable {
                 Message message = (Message) input.readObject();
                 //IF message = joined controller.setUserList(message)
 
+                String serverUserName = "Server";
+                boolean senderIsServer = message.getSender().toString().equals(serverUserName);
+                boolean senderIsCorrespondent = message.getSender().toString().equals(ChatApplication.correspondent);
 
                 switch (message.getType()) {
-                    case CONNECT:
-                        Platform.runLater(() -> users.addAll(message.getContent()));
+
+
+                    case USER_CONNECTED:
+                        // SERVER SENDING connect MESSAGE = NOTIFY NEW USER ARRIVED
+                        if (senderIsServer) {
+                            Platform.runLater(() -> users.addAll(message.getContent()));
+                        }
+                        // connect MESSAGE NOT FROM SERVER = ERROR
+                        else {
+                            //TODO send error message
+                        }
                         break;
-                    case DISCONNECT:
-                        Platform.runLater(() -> users.removeAll(message.getContent()));
+                    case USER_DISCONNECTED:
+                        // SERVER SENDING disconnect MESSAGE = NOTIFY USER LEFT
+                        if (senderIsServer) {
+                            Platform.runLater(() -> users.removeAll(message.getContent()));
+                        }
+                        // disconnect MESSAGE NOT FROM SERVER = ERROR
+                        else {
+                            //TODO send error message
+                        }
                         break;
                     case PRIVATE:
-                        if (message.getSender().toString() == "Server") {
+                        // SERVER SENDING private MESSAGE = NOTIFY NEW USER ARRIVED
+                        if (senderIsServer) {
                             Platform.runLater(() -> users.addAll(message.getActiveUsers()));
-
                         } else {
-                            ChatApplication.launchPrivateChat(message.getSender().toString());
-
-                            Platform.runLater(() -> messagesPrivate.add(message.getContent()));
+                            Platform.runLater(() -> {
+                                // PRIVATE MESSAGE FROM OTHER PERSON THAN CORRESPONDENT
+                                if (!senderIsCorrespondent) {
+                                    ChatApplication.closePrivateChat();
+                                    ChatApplication.launchPrivateChat(message.getSender().toString());
+                                }
+                                messagesPrivate.add(message.getContent()); // ALSO EXECUTED IF SENDER==CORRESPONDENT
+                            });
                         }
                         break;
                     case BROADCAST:
+                        // BROADCAST = public message
                         Platform.runLater(() -> messagesPublic.add(message.getContent()));
                         break;
 
-                    case ERROR:
+                    case ERROR_LOGIN:
+                        // ERROR = loginError
                         Platform.runLater(() -> {
-                            try {
-                                ChatApplication.showLoginOnPublicStage(message.getContent());
-                            } catch (MalformedURLException e) {
-                                e.printStackTrace();
-                            }
+                            ChatApplication.showLogin(message.getContent());
                         });
                         break;
                 }
@@ -88,10 +109,6 @@ public class ClientThread implements Runnable {
             error("Couldn't get I/O for the connection to " + server);
             System.exit(1);
         }
-    }
-
-    public void addSelf(String username) {
-        System.out.println("test");
     }
 
     public ObservableList<String> getMessagesPublic() {
