@@ -61,8 +61,8 @@ public class ChatApplication extends Application {
         privateFXML = new URL(gui_path + "chat/PrivateChat.fxml");
     }
 
-    public static boolean askClosePrivateChat() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, correspondent+"wants to send you a msg, open chat ?", ButtonType.YES, ButtonType.NO);
+    public static boolean askClosePrivateChat(String newUser) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, newUser+"wants to send you a msg, open chat ?", ButtonType.YES, ButtonType.NO);
         ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
         return ButtonType.YES.equals(result);
     }
@@ -127,6 +127,7 @@ public class ChatApplication extends Application {
         if (privateStage != null) {
             privateStage.close();
         }
+        chatClient.clearPrivateMessages();
     }
 
     public static void launchPrivateChat(String user) {

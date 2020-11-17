@@ -77,7 +77,7 @@ public class PrivatChatController {
     /* ----------------------------- EXIT ----------------------------- */
     public void closePrivateChat() throws IOException {
 
-        //TODO close private window
+        ChatApplication.chatClient.sendPrivateMsg("I left",correspondent);
     }
 
 }

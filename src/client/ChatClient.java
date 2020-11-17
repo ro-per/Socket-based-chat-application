@@ -75,6 +75,7 @@ public class ChatClient {
         } catch (IOException e) {
             error("Could not connect with the server.");
         }
+        clientThread.addPrivateMessage(message);
     }
     public void sendRequestMSG(String text, String receiver) {
         Message message = new Message(user, MessageType.REQUEST_PRIVATE, text, receiver); // PRIVATE has 1 receiver
@@ -139,5 +140,9 @@ public class ChatClient {
 
     public void setClientThread(ClientThread clientThread) {
         this.clientThread = clientThread;
+    }
+
+    public void clearPrivateMessages() {
+        clientThread.clearPrivateMessages();
     }
 }

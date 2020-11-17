@@ -67,7 +67,7 @@ public class ClientThread implements Runnable {
 
                     case REQUEST_PRIVATE:
                         Platform.runLater(() -> {
-                            boolean b = ChatApplication.askClosePrivateChat();
+                            boolean b = ChatApplication.askClosePrivateChat(sender);
                             if (b) {
                                 ChatApplication.closePrivateChat();
                                 ChatApplication.launchPrivateChat(message.getSender().toString());
@@ -128,4 +128,11 @@ public class ClientThread implements Runnable {
         logger.log(Level.WARNING, msg, params);
     }
 
+    public void clearPrivateMessages() {
+        messagesPrivate.clear();
+    }
+
+    public void addPrivateMessage(Message message) {
+         //messagesPrivate.add(message.getContent());
+    }
 }
