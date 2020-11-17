@@ -133,6 +133,6 @@ public class ClientThread implements Runnable {
     }
 
     public void addPrivateMessage(Message message) {
-         //messagesPrivate.add(message.getContent());
+         messagesPrivate.add(message.getContent());
     }
 }
