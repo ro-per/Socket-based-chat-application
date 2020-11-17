@@ -142,7 +142,7 @@ public class ChatClient {
         this.clientThread = clientThread;
     }
 
-    public void clearPrivateMessages() {
+    public void resetPrivateChat() {
         clientThread.clearPrivateMessages();
     }
 }

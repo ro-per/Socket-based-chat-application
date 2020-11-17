@@ -22,7 +22,7 @@ public class PrivatChatController {
     @FXML
     private Label chatTitle;
     @FXML
-    private ListView chatPanePrivate;
+    private ListView<String> chatPanePrivate;
     @FXML
     private Button send_button;
 
@@ -31,7 +31,7 @@ public class PrivatChatController {
 
         chatPanePrivate.setItems(ChatApplication.chatClient.getPrivateMessages());
 
-        this.correspondent=ChatApplication.correspondent;
+        this.correspondent = ChatApplication.correspondent;
 
         String loggedInAs = "Logged in as (" + ChatApplication.chatClient.getUser().toString() + ")";
         String chattingTo = "your talking to (" + correspondent + ")";
@@ -76,8 +76,8 @@ public class PrivatChatController {
 
     /* ----------------------------- EXIT ----------------------------- */
     public void closePrivateChat() throws IOException {
-
-        ChatApplication.chatClient.sendPrivateMsg("I left",correspondent);
+        ChatApplication.chatClient.sendPrivateMsg("I left", correspondent);
+        ChatApplication.resetPrivateChat();
     }
 
 }

@@ -11,6 +11,7 @@ import javafx.scene.effect.Lighting;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -92,7 +93,7 @@ public class PublicChatController {
 
 
     /* ----------------------------- EXIT ----------------------------- */
-    public void closePublicChat() throws IOException {
+    public void closePublicChat(WindowEvent event) throws IOException {
         //Only  perform leave is chatclient is started
         if (chatClient != null) {
             chatClient.leave();

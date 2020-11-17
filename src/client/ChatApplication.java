@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -40,7 +41,7 @@ public class ChatApplication extends Application {
     public static final String title = "Socket-based Chat service";
     public static FXMLLoader fxmlLoader;
 
-    public static String correspondent;
+    public static String correspondent = null;
 
     public ChatApplication() throws MalformedURLException {
         //Stage attributes
@@ -61,11 +62,21 @@ public class ChatApplication extends Application {
         privateFXML = new URL(gui_path + "chat/PrivateChat.fxml");
     }
 
-    public static boolean askClosePrivateChat(String newUser) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, newUser+"wants to send you a msg, open chat ?", ButtonType.YES, ButtonType.NO);
+    public static boolean askOpenNewChat(String newUser) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, newUser + " wants to send you a msg, open chat ?", ButtonType.YES, ButtonType.NO);
         ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
         return ButtonType.YES.equals(result);
     }
+
+    public static boolean askCloseCurrentChat(WindowEvent event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to close this private chat with " + correspondent + "?", ButtonType.YES, ButtonType.NO);
+        ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
+        if(ButtonType.NO.equals(result)){
+            event.consume();
+        }
+        return ButtonType.YES.equals(result);
+    }
+
 
     @Override
     public void start(Stage primaryStage) {
@@ -114,7 +125,7 @@ public class ChatApplication extends Application {
 
         publicStage.setOnCloseRequest(event -> {
             try {
-                publicChatController.closePublicChat();
+                publicChatController.closePublicChat(event);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -126,8 +137,10 @@ public class ChatApplication extends Application {
     public static void closePrivateChat() {
         if (privateStage != null) {
             privateStage.close();
+            correspondent = null;
         }
-        chatClient.clearPrivateMessages();
+        chatClient.resetPrivateChat();
+
     }
 
     public static void launchPrivateChat(String user) {
@@ -147,7 +160,11 @@ public class ChatApplication extends Application {
 
             privateStage.setOnCloseRequest(event -> {
                 try {
-                    privatChatController.closePrivateChat();
+                    boolean b = askCloseCurrentChat(event);
+
+                    if( b) {
+                        privatChatController.closePrivateChat();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -160,6 +177,16 @@ public class ChatApplication extends Application {
 
 
     }
+
+    public static void resetPrivateChat() {
+        if (privateStage != null) {
+            privateStage.close();
+        }
+        correspondent = null;
+        chatClient.resetPrivateChat();
+
+    }
+
 
     public static ChatApplication getApplication() {
         return chatApplication;
