@@ -26,32 +26,24 @@ public class PublicChatController {
     @FXML
     private Label chatTitle;
     @FXML
-    private ListView chatPanePublic;
+    private ListView<String> chatPanePublic;
     @FXML
     private ListView<String> userPane;
 
-    int time;
-    Timer timer;
+
 
     public void initialize() {
-        setPanes();
+        chatPanePublic.setItems(ChatApplication.chatClient.getPublicMessages());
+        userPane.setItems(ChatApplication.chatClient.getUsers());
 
         String loggedInAs = "Logged in as (" + ChatApplication.chatClient.getUser().toString() + ")";
         chatTitle.setText(loggedInAs);// logged in as ...
 
     }
 
-    private void setPanes(){
-        chatPanePublic.setItems(ChatApplication.chatClient.getPublicMessages());
-        userPane.setItems(ChatApplication.chatClient.getUsers());
-
-    }
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
     public PublicChatController() {
-        time = 0;
-        timer = new Timer();
-
     }
 
 
@@ -80,7 +72,10 @@ public class PublicChatController {
 
         boolean self = selectedUser.equals(currentUser);
 
-        if (!self) ChatApplication.launchPrivateChat(selectedUser);
+        if (!self) {
+            ChatApplication.chatClient.sendRequestMSG("I want to send a message",selectedUser);
+            ChatApplication.launchPrivateChat(selectedUser);
+        }
     }
 
     /* ----------------------------- FIELD PRESSED ----------------------------- */
@@ -102,8 +97,6 @@ public class PublicChatController {
         if (chatClient != null) {
             chatClient.leave();
         }
-
-
         Platform.exit();
         System.exit(0);
     }

@@ -76,6 +76,15 @@ public class ChatClient {
             error("Could not connect with the server.");
         }
     }
+    public void sendRequestMSG(String text, String receiver) {
+        Message message = new Message(user, MessageType.REQUEST_PRIVATE, text, receiver); // PRIVATE has 1 receiver
+        try {
+            info("Sending private message ...");
+            clientThread.sendToServer(message);
+        } catch (IOException e) {
+            error("Could not connect with the server.");
+        }
+    }
 
     public void leave() {
         Message message = new Message(MessageType.REQUEST_DISCONNECT);

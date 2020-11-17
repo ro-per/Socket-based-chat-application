@@ -6,6 +6,8 @@ import gui.login.LoginController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -57,6 +59,12 @@ public class ChatApplication extends Application {
         loginFXML = new URL(gui_path + "login/LoginForm.fxml");
         publicFXML = new URL(gui_path + "chat/PublicChat.fxml");
         privateFXML = new URL(gui_path + "chat/PrivateChat.fxml");
+    }
+
+    public static boolean askClosePrivateChat() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, correspondent+"wants to send you a msg, open chat ?", ButtonType.YES, ButtonType.NO);
+        ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
+        return ButtonType.YES.equals(result);
     }
 
     @Override
@@ -125,7 +133,7 @@ public class ChatApplication extends Application {
 
         privateStage = new Stage();
 
-        ChatApplication.correspondent = user;
+        correspondent = user;
 
         PrivatChatController privatChatController = new PrivatChatController();
 
@@ -152,34 +160,6 @@ public class ChatApplication extends Application {
 
     }
 
-
-   /* public static void loadStage(URL fxml) {
-
-        fxmlLoader.setLocation(fxml);
-        try {
-            borderPane = fxmlLoader.load();
-        } catch (IOException e) {
-            System.out.println("IOException in showView()");
-            e.printStackTrace();
-            System.exit(1);
-        }
-        scene = new Scene(borderPane);
-        publicStage.setScene(scene);
-    }*/
-
-
-    public void setStagePropertiesToLogin() {
-
-    }
-
-    public static void setStagePropertiesToChat() {
-        publicStage.setResizable(true);
-        publicStage.setMaximized(true);
-        publicStage.setFullScreen(true);
-
-
-    }
-
     public static ChatApplication getApplication() {
         return chatApplication;
     }
@@ -190,19 +170,9 @@ public class ChatApplication extends Application {
 
     public static void connectToServer(String userName, String serverName, int portNumber) throws IOException {
         chatClient = new ChatClient(userName, serverName, portNumber);
-
-
         if (chatClient.start()) {
-//            chatPane.setItems();
-//            userPane.setItems(chatClient.getUsers());
-
-
             chatClient.connectUser(userName);
-
-            launchPublicChat();  // TODO - A
-
+            launchPublicChat();
         }
-
-
     }
 }

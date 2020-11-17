@@ -15,6 +15,7 @@ public class MessageHandler {
     public void processMessage(Message msg, ServerThread thread) throws IOException {
         switch (msg.getType()) {
             case PRIVATE:
+            case REQUEST_PRIVATE:
                 service.sendPrivateMessage(msg);
                 break;
             case BROADCAST:
