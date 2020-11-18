@@ -16,21 +16,13 @@ public class UserManager {
         userServerThreadMap = new HashMap<>();
     }
 
-    public void connectUser(User user, ServerThread thread) throws DuplicateUsernameException {
-        boolean duplicate = false;
-        for (User u : userServerThreadMap.keySet()) {
-            if (u.equals(user)) {
-                duplicate = true;
-            }
-        }
-        if (duplicate || user.compareWithString("Server")) {
+    public void connectUser(User user1, ServerThread thread) throws DuplicateUsernameException {
+        boolean duplicate = existsUser(user1);
+        if (duplicate || user1.compareWithString("Server")) {
 
-
-            throw new DuplicateUsernameException(user.getName());
+            throw new DuplicateUsernameException(user1.getName());
         } else {
-
-            userServerThreadMap.put(user, thread);
-
+            userServerThreadMap.put(user1, thread);
         }
     }
 
@@ -41,14 +33,12 @@ public class UserManager {
     }
 
     public ServerThread getServerThread(User user) {
-
         return userServerThreadMap.get(user);
-
     }
 
     public Set<String> getUsernames() {
         Set<String> usernames = new HashSet<>();
-        for (User u: userServerThreadMap.keySet()){
+        for (User u : userServerThreadMap.keySet()) {
             usernames.add(u.getName());
         }
         return usernames;
@@ -61,7 +51,6 @@ public class UserManager {
                 u = user;
             }
         }
-
         return userServerThreadMap.get(u);
     }
 
@@ -77,5 +66,16 @@ public class UserManager {
             }
         }
         return threads;
+    }
+
+    public boolean existsUser(User user1) {
+        for (User user2 : userServerThreadMap.keySet()) {
+            String u2 = user2.getName().toLowerCase();
+            String u1 = user1.getName().toLowerCase();
+            if (u2.contains(u1)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
