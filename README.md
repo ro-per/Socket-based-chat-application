@@ -7,7 +7,7 @@
 * [General info](#General-info)
 * [Features](#Features)
 * [Screenshots](#Screenshots)
-* [More information](#More information)
+* [Info](#Info)
 
 ## Authors
 * Romeo Permentier
@@ -33,6 +33,6 @@ Implement a simple chatsystem with following features:
 ## Screenshots
 //TODO
 
-## More information
+## Info
 * https://www.javatpoint.com/socket-programming
 * https://docs.oracle.com/javase/tutorial/networking/index.html
