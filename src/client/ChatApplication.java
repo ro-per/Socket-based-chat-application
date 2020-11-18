@@ -141,14 +141,6 @@ public class ChatApplication extends Application {
             e.printStackTrace();
         }
     }
-    public static void closePrivateChat() {
-        if (privateStage != null) {
-            privateStage.close();
-            correspondent = null;
-        }
-        chatClient.resetPrivateChat();
-
-    }
 
     public static void resetPrivateChat() {
         if (privateStage != null) {
@@ -162,7 +154,7 @@ public class ChatApplication extends Application {
 
     /*  -------------------------------- ALERTS -------------------------------- */
     public static boolean askOpenNewChat(String newUser) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, newUser + " wants to send you a msg, open chat ?", ButtonType.YES, ButtonType.NO);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, newUser + " send you a message, do you want to answer ?", ButtonType.YES, ButtonType.NO);
         ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
         return ButtonType.YES.equals(result);
     }

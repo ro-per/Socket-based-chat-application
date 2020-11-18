@@ -66,7 +66,7 @@ public class ClientThread implements Runnable {
                         case REQUEST_PRIVATE:
                             boolean b = ChatApplication.askOpenNewChat(sender);
                             if (b) {
-                                ChatApplication.closePrivateChat();
+                                ChatApplication.resetPrivateChat();
                                 ChatApplication.launchPrivateChat(message.getSender().toString());
                             } else {
                                 ChatApplication.chatClient.sendPrivateMsg("I do not want to talk", sender);
@@ -108,7 +108,6 @@ public class ClientThread implements Runnable {
 
     public void clearPrivateMessages() {
         messagesPrivate.clear();
-        System.out.println("test");
     }
 
     public void addPrivateMessage(Message message) {

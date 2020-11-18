@@ -80,7 +80,7 @@ public class PrivatChatController {
 
     /* ----------------------------- EXIT ----------------------------- */
     public void closePrivateChat() throws IOException {
-        ChatApplication.chatClient.sendPrivateMsg("I left", correspondent);
+//        ChatApplication.chatClient.sendPrivateMsg("I left", correspondent);
         ChatApplication.resetPrivateChat();
     }
 
