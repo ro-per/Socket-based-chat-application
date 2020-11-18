@@ -3,7 +3,6 @@ package client;
 import com.sun.istack.internal.Nullable;
 import gui.chat.PrivatChatController;
 import gui.chat.PublicChatController;
-import gui.login.LoginController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

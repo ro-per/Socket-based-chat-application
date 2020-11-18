@@ -125,19 +125,6 @@ public class ChatClient {
         return server;
     }
 
-    public int getPort() {
-        return port;
-    }
-
-    public ClientThread getClientThread() {
-        return clientThread;
-    }
-
-    /*  -------------------------------- SETTERS -------------------------------- */
-    public void setClientThread(ClientThread clientThread) {
-        this.clientThread = clientThread;
-    }
-
     /*  -------------------------------- LOGGER -------------------------------- */
     private void info(String msg, @Nullable Object... params) {
         logger.log(Level.INFO, msg, params);

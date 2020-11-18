@@ -47,13 +47,10 @@ public class ClientThread implements Runnable {
 
             while (isRunning) {
                 Message message = (Message) objectInputStream.readObject();
-                //IF message = joined controller.setUserList(message)
 
                 String serverUserName = "Server";
                 String content = message.getContent();
                 String sender = message.getSender().toString();
-                boolean senderIsServer = message.getSender().toString().equals(serverUserName);
-                boolean senderIsCorrespondent = message.getSender().toString().equals(ChatApplication.correspondent);
 
                 Platform.runLater(() -> {
                     switch (message.getType()) {
@@ -138,67 +135,3 @@ public class ClientThread implements Runnable {
         logger.log(Level.WARNING, msg, params);
     }
 }
-
-
-
-
-
-
-
-
-
-   /* public void run() {
-        try {
-            OutputStream socketOutputStream = socket.getOutputStream();
-            objectOutputStream = new ObjectOutputStream(socketOutputStream);
-            InputStream socketInputStream = socket.getInputStream();
-            objectInputStream = new ObjectInputStream(socketInputStream);
-
-            while (isRunning) {
-                Message message = (Message) objectInputStream.readObject();
-                //IF message = joined controller.setUserList(message)
-
-                String serverUserName = "Server";
-                String content = message.getContent();
-                String sender = message.getSender().toString();
-                boolean senderIsServer = message.getSender().toString().equals(serverUserName);
-                boolean senderIsCorrespondent = message.getSender().toString().equals(ChatApplication.correspondent);
-
-                switch (message.getType()) {
-                    case USER_CONNECTED:
-                        Platform.runLater(() -> users.addAll(content));
-                        break;
-                    case USER_DISCONNECTED:
-                        Platform.runLater(() -> users.removeAll(content));
-                        break;
-                    case REQUEST_PRIVATE:
-                        Platform.runLater(() -> {
-                            boolean b = ChatApplication.askOpenNewChat(sender);
-                            if (b) {
-                                ChatApplication.closePrivateChat();
-                                ChatApplication.launchPrivateChat(message.getSender().toString());
-                            } else {
-                                ChatApplication.chatClient.sendPrivateMsg("I do not want to talk", sender);
-                            }
-                        });
-                        break;
-                    case PRIVATE:
-                        Platform.runLater(() -> messagesPrivate.add(content));
-                        break;
-
-                    case BROADCAST:
-                        Platform.runLater(() -> messagesPublic.add(content));
-                        break;
-
-                    case ERROR_LOGIN:
-                        Platform.runLater(() -> ChatApplication.showLogin(content));
-                        break;
-                }
-            }
-        } catch (IOException |
-                ClassNotFoundException e) {
-            error("Couldn't get I/O for the connection to " + server);
-            System.exit(1);
-        }
-
-    }*/
