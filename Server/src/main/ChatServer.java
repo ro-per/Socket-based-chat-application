@@ -4,6 +4,7 @@ import com.sun.istack.internal.Nullable;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +19,12 @@ public class ChatServer {
     /* ----------------------------- MAIN ----------------------------- */
     public static void main(String[] args) {
         int portNumber = 1000;
+        try {
+            portNumber = Integer.parseInt(args[0]);
+        } catch (NumberFormatException ne) {
+            System.out.println("Port could not be parsed, cause: " + ne.getCause());
+            System.out.println("Standard port 1000 is used.");
+        }
         ChatServer server = new ChatServer(portNumber);
         server.start();
     }
