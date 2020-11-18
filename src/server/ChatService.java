@@ -1,15 +1,17 @@
 package server;
 
 import com.sun.istack.internal.Nullable;
-import server.user.User;
-import server.user.UserManager;
 import server.exceptions.DuplicateUsernameException;
 import server.exceptions.UserNotFoundException;
 import server.messages.Message;
 import server.messages.MessageType;
+import server.user.User;
+import server.user.UserManager;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,7 +20,7 @@ public class ChatService {
     private static final Logger logger = Logger.getLogger(ChatService.class.getName());
     private final UserManager manager;
 
-    private User serverUser = new User("Server");
+    private final User serverUser = new User("Server");
 
     public ChatService() {
         manager = new UserManager();
@@ -31,7 +33,7 @@ public class ChatService {
             //REGISTER USER IN MANAGER
             manager.connectUser(user, thread);
 
-            //NOITFY OTHER USERS
+            //NOTIFY OTHER USERS
             sendUserConnectedMessage(user);
 
         } catch (DuplicateUsernameException e) {
@@ -77,10 +79,13 @@ public class ChatService {
     }
 
     public void sendUserConnectedMessage(User user) throws IOException {
-        //ADD USER TO USER LISTS
+        //ADD USER TO ALL USER LISTS
         Message msg1 = new Message(MessageType.USER_CONNECTED, user.getName());
         msg1.setSender(serverUser);
         sendPublicMessage(msg1);
+
+        //SEND ACTIVE USERS TO CURRENT LOGGING IN USER
+        sendUserList(user.toString());
     }
 
     public void sendUserDisconnectedMessage(User user) throws IOException {
@@ -97,4 +102,11 @@ public class ChatService {
         logger.log(Level.WARNING, msg, params);
     }
 
+    public void sendUserList(String receiver) throws IOException {
+        Set<String> users = manager.getUsernames();
+        users.remove(receiver);
+        Message msg = new Message(serverUser,MessageType.USER_LIST, "ACTIVE USERS", receiver);
+        msg.setActiveUsers(users);
+        sendPrivateMessage(msg);
+    }
 }

@@ -56,7 +56,6 @@ public class ClientThread implements Runnable {
                 boolean senderIsCorrespondent = message.getSender().toString().equals(ChatApplication.correspondent);
 
                 Platform.runLater(() -> {
-
                     switch (message.getType()) {
                         case USER_CONNECTED:
                             users.addAll(content);
@@ -82,6 +81,8 @@ public class ClientThread implements Runnable {
                         case ERROR_LOGIN:
                             ChatApplication.showLogin(content);
                             break;
+                        case USER_LIST:
+                            users.addAll(message.getActiveUsers());
                     }
                 });
             }

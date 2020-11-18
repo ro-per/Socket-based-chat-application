@@ -5,6 +5,7 @@ import server.user.User;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 

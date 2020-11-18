@@ -23,6 +23,7 @@ public class MessageHandler {
                 break;
             case REQUEST_CONNECT:
                 service.connectUser(msg.getSender(), thread);
+
                 break;
             case REQUEST_DISCONNECT:
                 service.disconnectUser(msg.getSender(), thread);
