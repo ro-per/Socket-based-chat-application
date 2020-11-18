@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public class ClientThread implements Runnable {
 
-    private static final Logger logger = Logger.getLogger(ClientThread.class.getName());
+    private final Logger logger = Logger.getLogger(ClientThread.class.getName());
 
     private volatile boolean isRunning = true;
     private final Socket socket;
@@ -23,8 +23,8 @@ public class ClientThread implements Runnable {
     private ObservableList<String> messagesPrivate;
     private ObservableList<String> users;
     private final User user;
-    private static ObjectOutputStream oos;
-
+    ObjectOutputStream objectOutputStream;
+    ObjectInputStream objectInputStream;
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
     public ClientThread(Socket socket, String server, User user) {
         this.socket = socket;
@@ -38,13 +38,13 @@ public class ClientThread implements Runnable {
     /* ----------------------------- RUN ----------------------------- */
     public void run() {
         try {
-            OutputStream outputStream = socket.getOutputStream();
-            oos = new ObjectOutputStream(outputStream);
-            InputStream is = socket.getInputStream();
-            ObjectInputStream input = new ObjectInputStream(is);
+            OutputStream socketOutputStream = socket.getOutputStream();
+            objectOutputStream = new ObjectOutputStream(socketOutputStream);
+            InputStream socketInputStream = socket.getInputStream();
+            objectInputStream = new ObjectInputStream(socketInputStream);
 
             while (isRunning) {
-                Message message = (Message) input.readObject();
+                Message message = (Message) objectInputStream.readObject();
                 //IF message = joined controller.setUserList(message)
 
                 String serverUserName = "Server";
@@ -55,16 +55,11 @@ public class ClientThread implements Runnable {
 
                 switch (message.getType()) {
                     case USER_CONNECTED:
-                        // SERVER SENDING connect MESSAGE = NOTIFY NEW USER ARRIVED
                         Platform.runLater(() -> users.addAll(content));
-
                         break;
-
                     case USER_DISCONNECTED:
                         Platform.runLater(() -> users.removeAll(content));
-
                         break;
-
                     case REQUEST_PRIVATE:
                         Platform.runLater(() -> {
                             boolean b = ChatApplication.askOpenNewChat(sender);
@@ -109,24 +104,16 @@ public class ClientThread implements Runnable {
         return users;
     }
 
-
     public void sendToServer(Message msg) throws IOException {
         msg.setSender(user);
-        oos.writeObject(msg);
-        oos.flush();
+        objectOutputStream.writeObject(msg);
+        objectOutputStream.flush();
     }
 
     public void stop() {
         isRunning = false;
     }
 
-    private static void info(String msg, @Nullable Object... params) {
-        logger.log(Level.INFO, msg, params);
-    }
-
-    private static void error(String msg, @Nullable Object... params) {
-        logger.log(Level.WARNING, msg, params);
-    }
 
     public void clearPrivateMessages() {
         messagesPrivate.clear();
@@ -134,6 +121,16 @@ public class ClientThread implements Runnable {
     }
 
     public void addPrivateMessage(Message message) {
-         messagesPrivate.add(message.getContent());
+        messagesPrivate.add(message.getContent());
+    }
+
+
+    /*  -------------------------------- LOGGER -------------------------------- */
+    private void info(String msg, @Nullable Object... params) {
+        logger.log(Level.INFO, msg, params);
+    }
+
+    private void error(String msg, @Nullable Object... params) {
+        logger.log(Level.WARNING, msg, params);
     }
 }

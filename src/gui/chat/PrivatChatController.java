@@ -1,7 +1,7 @@
 package gui.chat;
 
 import client.ChatApplication;
-import client.ChatClient;
+import com.sun.istack.internal.Nullable;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -12,8 +12,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PrivatChatController {
+    private final Logger logger = Logger.getLogger(PrivatChatController.class.getName());
+
 
     private String correspondent;
     /* ----------------------------- @FXML ----------------------------- */
@@ -80,4 +84,13 @@ public class PrivatChatController {
         ChatApplication.resetPrivateChat();
     }
 
+
+    /*  -------------------------------- LOGGER -------------------------------- */
+    private void info(String msg, @Nullable Object... params) {
+        logger.log(Level.INFO, msg, params);
+    }
+
+    private void error(String msg, @Nullable Object... params) {
+        logger.log(Level.WARNING, msg, params);
+    }
 }

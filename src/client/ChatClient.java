@@ -2,9 +2,9 @@ package client;
 
 import com.sun.istack.internal.Nullable;
 import javafx.collections.ObservableList;
-import server.user.User;
 import server.messages.Message;
 import server.messages.MessageType;
+import server.user.User;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -14,21 +14,21 @@ import java.util.logging.Logger;
 
 public class ChatClient {
 
-    private static final Logger logger = Logger.getLogger(ChatClient.class.getName());
+    private final Logger logger = Logger.getLogger(ChatClient.class.getName());
 
     private final User user;
     private final String server;
     private final int port;
     private ClientThread clientThread;
 
-    /* ----------------------------- CONSTRUCTOR ----------------------------- */
+    /*  -------------------------------- CONSTRUCTOR -------------------------------- */
     public ChatClient(String username, String server, int port) {
         this.user = new User(username);
         this.server = server;
         this.port = port;
     }
 
-    /* ----------------------------- START ----------------------------- */
+    /*  -------------------------------- START -------------------------------- */
     public boolean start() {
         try {
             Socket socket = new Socket(server, port);
@@ -44,19 +44,30 @@ public class ChatClient {
         return true;
     }
 
+    /*  -------------------------------- CONNECT/DISCONNECT -------------------------------- */
     public void connectUser(String username) {
         Message message = new Message(MessageType.REQUEST_CONNECT);
         message.setSender(new User(username));
         try {
             info("Trying to connect " + username);
             clientThread.sendToServer(message);
-//            clientThread.addSelf(username);   //TODO
-
         } catch (IOException e) {
             error("Could not connect with the server.");
         }
     }
 
+    public void disconnectUser() {
+        Message message = new Message(MessageType.REQUEST_DISCONNECT);
+        try {
+            clientThread.sendToServer(message);
+            info("Leaving...");
+            clientThread.stop();
+        } catch (IOException e) {
+            error("Failed to disconnect from server");
+        }
+    }
+
+    /*  -------------------------------- SENDING MESSAGES -------------------------------- */
     public void sendBroadcastMsg(String text) {
         Message message = new Message(user, MessageType.BROADCAST, text); //BROADCAST does not need receiver
         try {
@@ -77,6 +88,7 @@ public class ChatClient {
         }
         clientThread.addPrivateMessage(message);
     }
+
     public void sendRequestMSG(String text, String receiver) {
         Message message = new Message(user, MessageType.REQUEST_PRIVATE, text, receiver); // PRIVATE has 1 receiver
         try {
@@ -87,36 +99,21 @@ public class ChatClient {
         }
     }
 
-    public void leave() {
-        Message message = new Message(MessageType.REQUEST_DISCONNECT);
-        try {
-            clientThread.sendToServer(message);
-            info("Leaving...");
-            clientThread.stop();
-        } catch (IOException e) {
-            error("Failed to disconnect from server");
-        }
-    }
 
-    private static void info(String msg, @Nullable Object... params) {
-        logger.log(Level.INFO, msg, params);
-    }
 
-    private static void error(String msg, @Nullable Object... params) {
-        logger.log(Level.WARNING, msg, params);
-    }
-    /* ----------------------------- GETTERS ----------------------------- */
+    /*  -------------------------------- GETTERS -------------------------------- */
 
     public ObservableList<String> getPublicMessages() {
         return clientThread.getMessagesPublic();
     }
+
     public ObservableList<String> getPrivateMessages() {
         return clientThread.getMessagesPrivate();
     }
+
     public ObservableList<String> getUsers() {
         return clientThread.getUsers();
     }
-
 
     public User getUser() {
         return user;
@@ -135,8 +132,7 @@ public class ChatClient {
     }
 
 
-
-    /* ----------------------------- SETTERS ----------------------------- */
+    /*  -------------------------------- SETTERS -------------------------------- */
 
     public void setClientThread(ClientThread clientThread) {
         this.clientThread = clientThread;
@@ -144,5 +140,15 @@ public class ChatClient {
 
     public void resetPrivateChat() {
         clientThread.clearPrivateMessages();
+    }
+
+
+    /*  -------------------------------- LOGGER -------------------------------- */
+    private void info(String msg, @Nullable Object... params) {
+        logger.log(Level.INFO, msg, params);
+    }
+
+    private void error(String msg, @Nullable Object... params) {
+        logger.log(Level.WARNING, msg, params);
     }
 }

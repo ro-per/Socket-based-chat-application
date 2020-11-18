@@ -2,6 +2,7 @@ package gui.chat;
 
 import client.ChatApplication;
 import client.ChatClient;
+import com.sun.istack.internal.Nullable;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -10,15 +11,17 @@ import javafx.scene.control.TextField;
 import javafx.scene.effect.Lighting;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PublicChatController {
+    private final Logger logger = Logger.getLogger(PublicChatController.class.getName());
+
+
     private ChatClient chatClient = null;
 
     /* ----------------------------- @FXML ----------------------------- */
@@ -30,7 +33,6 @@ public class PublicChatController {
     private ListView<String> chatPanePublic;
     @FXML
     private ListView<String> userPane;
-
 
 
     public void initialize() {
@@ -74,7 +76,7 @@ public class PublicChatController {
         boolean self = selectedUser.equals(currentUser);
 
         if (!self) {
-            ChatApplication.chatClient.sendRequestMSG("I want to send a message",selectedUser);
+            ChatApplication.chatClient.sendRequestMSG("I want to send a message", selectedUser);
             ChatApplication.launchPrivateChat(selectedUser);
         }
     }
@@ -96,7 +98,7 @@ public class PublicChatController {
     public void closePublicChat(WindowEvent event) throws IOException {
         //Only  perform leave is chatclient is started
         if (chatClient != null) {
-            chatClient.leave();
+            chatClient.disconnectUser();
         }
         Platform.exit();
         System.exit(0);
@@ -104,6 +106,16 @@ public class PublicChatController {
 
     public void setChatClient(ChatClient chatClient) {
         this.chatClient = chatClient;
+    }
+
+
+    /*  -------------------------------- LOGGER -------------------------------- */
+    private void info(String msg, @Nullable Object... params) {
+        logger.log(Level.INFO, msg, params);
+    }
+
+    private void error(String msg, @Nullable Object... params) {
+        logger.log(Level.WARNING, msg, params);
     }
 
 }

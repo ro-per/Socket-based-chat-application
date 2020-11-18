@@ -1,5 +1,6 @@
 package client;
 
+import com.sun.istack.internal.Nullable;
 import gui.chat.PrivatChatController;
 import gui.chat.PublicChatController;
 import gui.login.LoginController;
@@ -16,68 +17,34 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ChatApplication extends Application {
+    private final Logger logger = Logger.getLogger(ChatApplication.class.getName());
 
-    private static Stage publicStage;
+    private static Stage publicStage, privateStage;
     private static Scene publicScene;
-
-    private static Stage privateStage;
-    private static Scene privateScene;
-
     private static BorderPane publicBorderPane;
-    private static BorderPane privateBorderPane;
-
-
     private static ChatApplication chatApplication;
     public static ChatClient chatClient = null;
-
-    private static LoginController loginController;
     private static PublicChatController publicChatController;
-    private static PrivatChatController privatChatController;
-
     private static URL loginFXML, publicFXML, privateFXML;
-
     public static final String title = "Socket-based Chat service";
     public static FXMLLoader fxmlLoader;
-
     public static String correspondent = null;
 
+    /*  -------------------------------- CONSTRUCTOR -------------------------------- */
     public ChatApplication() throws MalformedURLException {
-        //Stage attributes
-
-
-        //Controllers
         publicChatController = new PublicChatController();
-        loginController = new LoginController();
-
-        //Application
-        if (chatApplication == null) {
-            chatApplication = this;
-        }
-        //FXML paths
+        if (chatApplication == null) chatApplication = this;
         String gui_path = "file:src/gui/";
         loginFXML = new URL(gui_path + "login/LoginForm.fxml");
         publicFXML = new URL(gui_path + "chat/PublicChat.fxml");
         privateFXML = new URL(gui_path + "chat/PrivateChat.fxml");
     }
 
-    public static boolean askOpenNewChat(String newUser) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, newUser + " wants to send you a msg, open chat ?", ButtonType.YES, ButtonType.NO);
-        ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
-        return ButtonType.YES.equals(result);
-    }
-
-    public static boolean askCloseCurrentChat(WindowEvent event) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to close this private chat with " + correspondent + "?", ButtonType.YES, ButtonType.NO);
-        ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
-        if(ButtonType.NO.equals(result)){
-            event.consume();
-        }
-        return ButtonType.YES.equals(result);
-    }
-
-
+    /*  -------------------------------- START -------------------------------- */
     @Override
     public void start(Stage primaryStage) {
 
@@ -91,6 +58,16 @@ public class ChatApplication extends Application {
         }
     }
 
+    /*  -------------------------------- CONNECTING -------------------------------- */
+    public static void connectToServer(String userName, String serverName, int portNumber) throws IOException {
+        chatClient = new ChatClient(userName, serverName, portNumber);
+        if (chatClient.start()) {
+            chatClient.connectUser(userName);
+            launchPublicChat();
+        }
+    }
+
+    /*  -------------------------------- LOGIN GUI -------------------------------- */
     public static void showLogin(String title) {
         fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(loginFXML);
@@ -110,6 +87,7 @@ public class ChatApplication extends Application {
         publicStage.show();
     }
 
+    /*  -------------------------------- PUBLIC GUI -------------------------------- */
     public static void launchPublicChat() {
         publicChatController.setChatClient(chatClient);
 
@@ -134,35 +112,23 @@ public class ChatApplication extends Application {
         publicStage.show();
     }
 
-    public static void closePrivateChat() {
-        if (privateStage != null) {
-            privateStage.close();
-            correspondent = null;
-        }
-        chatClient.resetPrivateChat();
-
-    }
-
+    /*  -------------------------------- PRIVATE GUI -------------------------------- */
     public static void launchPrivateChat(String user) {
-
         privateStage = new Stage();
-
         correspondent = user;
-
         PrivatChatController privatChatController = new PrivatChatController();
-
         fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(privateFXML);
         try {
-            privateBorderPane = fxmlLoader.load();
-            privateScene = new Scene(privateBorderPane);
+            BorderPane privateBorderPane = fxmlLoader.load();
+            Scene privateScene = new Scene(privateBorderPane);
             privateStage.setScene(privateScene);
 
             privateStage.setOnCloseRequest(event -> {
                 try {
                     boolean b = askCloseCurrentChat(event);
 
-                    if( b) {
+                    if (b) {
                         privatChatController.closePrivateChat();
                     }
                 } catch (IOException e) {
@@ -174,7 +140,13 @@ public class ChatApplication extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+    }
+    public static void closePrivateChat() {
+        if (privateStage != null) {
+            privateStage.close();
+            correspondent = null;
+        }
+        chatClient.resetPrivateChat();
 
     }
 
@@ -188,6 +160,23 @@ public class ChatApplication extends Application {
     }
 
 
+    /*  -------------------------------- ALERTS -------------------------------- */
+    public static boolean askOpenNewChat(String newUser) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, newUser + " wants to send you a msg, open chat ?", ButtonType.YES, ButtonType.NO);
+        ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
+        return ButtonType.YES.equals(result);
+    }
+
+    public static boolean askCloseCurrentChat(WindowEvent event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to close this private chat with " + correspondent + "?", ButtonType.YES, ButtonType.NO);
+        ButtonType result = alert.showAndWait().orElse(ButtonType.NO);
+        if (ButtonType.NO.equals(result)) {
+            event.consume();
+        }
+        return ButtonType.YES.equals(result);
+    }
+
+    /*  -------------------------------- GETTERS -------------------------------- */
     public static ChatApplication getApplication() {
         return chatApplication;
     }
@@ -196,11 +185,13 @@ public class ChatApplication extends Application {
         return chatClient;
     }
 
-    public static void connectToServer(String userName, String serverName, int portNumber) throws IOException {
-        chatClient = new ChatClient(userName, serverName, portNumber);
-        if (chatClient.start()) {
-            chatClient.connectUser(userName);
-            launchPublicChat();
-        }
+
+    /*  -------------------------------- LOGGER -------------------------------- */
+    private void info(String msg, @Nullable Object... params) {
+        logger.log(Level.INFO, msg, params);
+    }
+
+    private void error(String msg, @Nullable Object... params) {
+        logger.log(Level.WARNING, msg, params);
     }
 }
