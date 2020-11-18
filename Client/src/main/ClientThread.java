@@ -1,11 +1,11 @@
-package client;
+package main;
 
 import com.sun.istack.internal.Nullable;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import server.messages.Message;
-import server.user.User;
+import messages.Message;
+import user.User;
 
 import java.io.*;
 import java.net.Socket;
@@ -92,11 +92,13 @@ public class ClientThread implements Runnable {
 
     }
 
+
     /*  -------------------------------- METHODS -------------------------------- */
     public void putOnStream(Message msg) throws IOException {
         msg.setSender(user);
         objectOutputStream.writeObject(msg);
         objectOutputStream.flush();
+
     }
 
     public void stop() {

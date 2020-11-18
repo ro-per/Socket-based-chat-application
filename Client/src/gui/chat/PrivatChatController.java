@@ -1,84 +1,70 @@
 package gui.chat;
 
-import client.ChatApplication;
-import client.ChatClient;
 import com.sun.istack.internal.Nullable;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.Lighting;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.WindowEvent;
+import main.ChatApplication;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class PublicChatController {
-    private final Logger logger = Logger.getLogger(PublicChatController.class.getName());
+public class PrivatChatController {
+    private final Logger logger = Logger.getLogger(PrivatChatController.class.getName());
 
 
-    private ChatClient chatClient = null;
-
+    private String correspondent;
     /* ----------------------------- @FXML ----------------------------- */
     @FXML
     private TextField msgField;
     @FXML
     private Label chatTitle;
     @FXML
-    private ListView<String> chatPanePublic;
+    private ListView<String> chatPanePrivate;
     @FXML
-    private ListView<String> userPane;
+    private Button send_button;
 
 
     public void initialize() {
-        chatPanePublic.setItems(ChatApplication.chatClient.getPublicMessages());
-        userPane.setItems(ChatApplication.chatClient.getUsers());
+
+        chatPanePrivate.setItems(ChatApplication.chatClient.getPrivateMessages());
+
+        this.correspondent = ChatApplication.correspondent;
 
         String loggedInAs = "Logged in as (" + ChatApplication.chatClient.getUser().toString() + ")";
-        chatTitle.setText(loggedInAs);// logged in as ...
+        String chattingTo = "your talking to (" + correspondent + ")";
+        chatTitle.setText(loggedInAs + " | " + chattingTo);
 
     }
-
 
     /* ----------------------------- CONSTRUCTOR ----------------------------- */
-    public PublicChatController() {
+    public PrivatChatController() {
     }
 
+    public PrivatChatController(String correspondent) {
+        this.correspondent = correspondent;
+    }
 
-    /* ----------------------------- SEND BROADCAST ----------------------------- */
-    public void sendBroadcastAction() throws IOException {
+    /* ----------------------------- SEND PRIVATE ----------------------------- */
+    public void sendPrivateAction() throws IOException {
         String text = msgField.getText();
         if (!text.isEmpty()) {
-            ChatApplication.chatClient.sendBroadcastMsg(text);
+            ChatApplication.chatClient.sendPrivateMsg(text, correspondent);
             msgField.clear();
         } else {
             flashTextField(this.msgField);
         }
     }
 
-
     /* ----------------------------- KEY PRESSED ----------------------------- */
     public void keyPressed(KeyEvent ke) throws IOException {
-        if (ke.getCode().equals(KeyCode.ENTER)) sendBroadcastAction();
-    }
-
-    @FXML
-    public void chooseUser() throws MalformedURLException {
-
-        String selectedUser = userPane.getSelectionModel().getSelectedItem();
-        String currentUser = ChatApplication.chatClient.getUser().getName();
-
-        boolean self = selectedUser.equals(currentUser);
-
-        if (!self) {
-            ChatApplication.chatClient.sendRequestPrivateMSG("I want to send a message", selectedUser);
-            ChatApplication.launchPrivateChat(selectedUser);
-        }
+        if (ke.getCode().equals(KeyCode.ENTER)) sendPrivateAction();
     }
 
     /* ----------------------------- FIELD PRESSED ----------------------------- */
@@ -86,26 +72,16 @@ public class PublicChatController {
         msgField.setEffect(null);
     }
 
-
     /* ----------------------------- VISUAL EFFECTS ----------------------------- */
     public void flashTextField(TextField t) {
         Lighting errorLighting = new Lighting();
         t.setEffect(errorLighting);
     }
 
-
     /* ----------------------------- EXIT ----------------------------- */
-    public void closePublicChat(WindowEvent event) throws IOException {
-        //Only  perform leave is chatclient is started
-        if (chatClient != null) {
-            chatClient.disconnectUser();
-        }
-        Platform.exit();
-        System.exit(0);
-    }
-
-    public void setChatClient(ChatClient chatClient) {
-        this.chatClient = chatClient;
+    public void closePrivateChat() throws IOException {
+//        ChatApplication.chatClient.sendPrivateMsg("I left", correspondent);
+        ChatApplication.resetPrivateChat();
     }
 
 
@@ -117,5 +93,4 @@ public class PublicChatController {
     private void error(String msg, @Nullable Object... params) {
         logger.log(Level.WARNING, msg, params);
     }
-
 }

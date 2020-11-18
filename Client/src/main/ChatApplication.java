@@ -1,4 +1,4 @@
-package client;
+package main;
 
 import com.sun.istack.internal.Nullable;
 import gui.chat.PrivatChatController;
@@ -37,7 +37,7 @@ public class ChatApplication extends Application {
     public ChatApplication() throws MalformedURLException {
         publicChatController = new PublicChatController();
         if (chatApplication == null) chatApplication = this;
-        String gui_path = "file:src/gui/";
+        String gui_path = "file:Client/src/gui/";
         loginFXML = new URL(gui_path + "login/LoginForm.fxml");
         publicFXML = new URL(gui_path + "chat/PublicChat.fxml");
         privateFXML = new URL(gui_path + "chat/PrivateChat.fxml");

@@ -1,10 +1,10 @@
-package client;
+package main;
 
 import com.sun.istack.internal.Nullable;
 import javafx.collections.ObservableList;
-import server.messages.Message;
-import server.messages.MessageType;
-import server.user.User;
+import messages.Message;
+import messages.MessageType;
+import user.User;
 
 import java.io.IOException;
 import java.net.Socket;

@@ -1,8 +1,8 @@
-package server;
+package main;
 
 import com.sun.istack.internal.Nullable;
-import server.user.User;
-import server.messages.Message;
+import messages.Message;
+import user.User;
 
 import java.io.*;
 import java.net.Socket;

@@ -1,16 +1,15 @@
-package server;
+package main;
 
 import com.sun.istack.internal.Nullable;
-import server.exceptions.DuplicateUsernameException;
-import server.exceptions.UserNotFoundException;
-import server.messages.Message;
-import server.messages.MessageType;
-import server.user.User;
-import server.user.UserManager;
+import exceptions.DuplicateUsernameException;
+import exceptions.UserNotFoundException;
+import messages.Message;
+import messages.MessageType;
+import user.User;
+import user.UserManager;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -105,7 +104,7 @@ public class ChatService {
     public void sendUserList(String receiver) throws IOException {
         Set<String> users = manager.getUsernames();
         users.remove(receiver);
-        Message msg = new Message(serverUser,MessageType.USER_LIST, "ACTIVE USERS", receiver);
+        Message msg = new Message(serverUser, MessageType.USER_LIST, "ACTIVE USERS", receiver);
         msg.setActiveUsers(users);
         sendPrivateMessage(msg);
     }

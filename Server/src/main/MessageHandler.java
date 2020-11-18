@@ -1,6 +1,6 @@
-package server;
+package main;
 
-import server.messages.Message;
+import messages.Message;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package server;
+package main;
 
 import com.sun.istack.internal.Nullable;
 
@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 public class ChatServer {
     private static final Logger logger = Logger.getLogger(ChatServer.class.getName());

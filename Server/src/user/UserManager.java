@@ -1,8 +1,8 @@
-package server.user;
+package user;
 
-import server.ServerThread;
-import server.exceptions.DuplicateUsernameException;
-import server.exceptions.UserNotFoundException;
+import exceptions.DuplicateUsernameException;
+import exceptions.UserNotFoundException;
+import main.ServerThread;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -19,6 +19,8 @@ public class UserManager {
     public void connectUser(User user1, ServerThread thread) throws DuplicateUsernameException {
         boolean duplicate = existsUser(user1);
         if (duplicate || user1.compareWithString("Server")) {
+
+            //TODO send ERROR_LOGIN
 
             throw new DuplicateUsernameException(user1.getName());
         } else {
