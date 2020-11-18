@@ -185,7 +185,6 @@ public class ChatApplication extends Application {
         return chatClient;
     }
 
-
     /*  -------------------------------- LOGGER -------------------------------- */
     private void info(String msg, @Nullable Object... params) {
         logger.log(Level.INFO, msg, params);

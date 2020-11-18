@@ -50,7 +50,7 @@ public class ChatClient {
         message.setSender(new User(username));
         try {
             info("Trying to connect " + username);
-            clientThread.sendToServer(message);
+            clientThread.putOnStream(message);
         } catch (IOException e) {
             error("Could not connect with the server.");
         }
@@ -59,7 +59,7 @@ public class ChatClient {
     public void disconnectUser() {
         Message message = new Message(MessageType.REQUEST_DISCONNECT);
         try {
-            clientThread.sendToServer(message);
+            clientThread.putOnStream(message);
             info("Leaving...");
             clientThread.stop();
         } catch (IOException e) {
@@ -72,7 +72,7 @@ public class ChatClient {
         Message message = new Message(user, MessageType.BROADCAST, text); //BROADCAST does not need receiver
         try {
             info("Broadcasting...");
-            clientThread.sendToServer(message);
+            clientThread.putOnStream(message);
         } catch (IOException e) {
             error("Could not connect with the server.");
         }
@@ -82,27 +82,29 @@ public class ChatClient {
         Message message = new Message(user, MessageType.PRIVATE, text, receiver); // PRIVATE has 1 receiver
         try {
             info("Sending private message ...");
-            clientThread.sendToServer(message);
+            clientThread.putOnStream(message);
         } catch (IOException e) {
             error("Could not connect with the server.");
         }
         clientThread.addPrivateMessage(message);
     }
 
-    public void sendRequestMSG(String text, String receiver) {
+    public void sendRequestPrivateMSG(String text, String receiver) {
         Message message = new Message(user, MessageType.REQUEST_PRIVATE, text, receiver); // PRIVATE has 1 receiver
         try {
             info("Sending private message ...");
-            clientThread.sendToServer(message);
+            clientThread.putOnStream(message);
         } catch (IOException e) {
             error("Could not connect with the server.");
         }
     }
 
-
+    /*  -------------------------------- METHODS -------------------------------- */
+    public void resetPrivateChat() {
+        clientThread.clearPrivateMessages();
+    }
 
     /*  -------------------------------- GETTERS -------------------------------- */
-
     public ObservableList<String> getPublicMessages() {
         return clientThread.getMessagesPublic();
     }
@@ -131,17 +133,10 @@ public class ChatClient {
         return clientThread;
     }
 
-
     /*  -------------------------------- SETTERS -------------------------------- */
-
     public void setClientThread(ClientThread clientThread) {
         this.clientThread = clientThread;
     }
-
-    public void resetPrivateChat() {
-        clientThread.clearPrivateMessages();
-    }
-
 
     /*  -------------------------------- LOGGER -------------------------------- */
     private void info(String msg, @Nullable Object... params) {
