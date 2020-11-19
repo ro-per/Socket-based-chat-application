@@ -53,7 +53,7 @@ Implement a simple chat-system with following features:
    * Server Module
 
 4. Run configurations:
-   * Program arguments Server: <portnumber>
+   * Program arguments Server: ```<portnumber>```
 
 ## Screenshots
 ![Login screen](Screenshots/screen_login.png?raw=true "Login Screen")
