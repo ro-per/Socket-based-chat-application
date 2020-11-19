@@ -1,8 +1,8 @@
 package main;
 
 import com.sun.istack.internal.Nullable;
-import gui.chat.PrivatChatController;
-import gui.chat.PublicChatController;
+import gui.PrivatChatController;
+import gui.PublicChatController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,7 +12,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,24 +32,16 @@ public class ChatApplication extends Application {
     public static final String title = "Socket-based Chat service";
     public static FXMLLoader fxmlLoader;
     public static String correspondent = null;
-    ClassLoader classLoader = getClass().getClassLoader();
 
     /*  -------------------------------- CONSTRUCTOR -------------------------------- */
     public ChatApplication() throws MalformedURLException {
         publicChatController = new PublicChatController();
         if (chatApplication == null) chatApplication = this;
 
-
-        String gui_path = "file:/gui/";
-        loginFXML = new URL(gui_path + "login/LoginForm.fxml");
-        publicFXML = new URL(gui_path + "chat/PublicChat.fxml");
-        privateFXML = new URL(gui_path + "chat/PrivateChat.fxml");
-
-        loginFXML= ClassLoader.getSystemClassLoader().getResource("/gui/login/LoginForm.fxml");
-        publicFXML= ClassLoader.getSystemClassLoader().getResource("/gui/chat/PublicChat.fxml");
-        privateFXML= ClassLoader.getSystemClassLoader().getResource("/gui/chat/PrivateChat.fxml");
-
-
+        ClassLoader classLoader = getClass().getClassLoader();
+        loginFXML= classLoader.getResource("gui/LoginForm.fxml");
+        publicFXML= classLoader.getResource("gui/PublicChat.fxml");
+        privateFXML= getClass().getClassLoader().getResource("gui/PrivateChat.fxml");
     }
 
     /*  -------------------------------- START -------------------------------- */
