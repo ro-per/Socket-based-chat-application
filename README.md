@@ -1,6 +1,4 @@
 # Socket-based Chat System
-
-
 ## Table of contents
 * [Authors](#Authors)
 * [Assignment description](#Assignment-description)
