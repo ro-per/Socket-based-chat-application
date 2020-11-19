@@ -34,11 +34,11 @@ Implement a simple chat-system with following features:
 
 2) Execute the jar's in the following order:
 
-* Server:
-``` java -jar Server.jar <portnumber>```
+    * Server:
+    ``` java -jar Server.jar <portnumber>```
 
-* Client: 
-``` java -jar Client.jar```
+    * Client: 
+    ``` java -jar Client.jar```
 
 ## Clone the project
 
