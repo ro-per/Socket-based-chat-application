@@ -30,6 +30,14 @@ Implement a simple chatsystem with following features:
 ### Login screen
 * lets user choose
 
+## How to run the jars ?
+* Client: 
+``` java -jar Client.jar```
+* Server:
+``` java -jar Server.jar <portnuber>```
+
+
+
 ## Screenshots
 ![Login screen](Screenshots/screen_login.png?raw=true "Login Screen")
 ![Screenshot 1](Screenshots/screen1.png?raw=true "Screenshot 1")
