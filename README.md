@@ -43,14 +43,17 @@ Implement a simple chat-system with following features:
 ## Clone the project
 
 1. Clone project from github
+
 2. Import project 
-*  Project JDK: 1.8.0_241
-*  Project Language Level: 8
+   *  Project JDK: 1.8.0_241
+   *  Project Language Level: 8
+   
 3. Setup 2 modules:
- * Client Module
- * Server Module
- 4. Run configurations:
- * Program arguments Server: <portnumber>
+   * Client Module
+   * Server Module
+
+4. Run configurations:
+   * Program arguments Server: <portnumber>
 
 ## Screenshots
 ![Login screen](Screenshots/screen_login.png?raw=true "Login Screen")
