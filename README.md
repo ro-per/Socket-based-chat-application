@@ -12,27 +12,33 @@
 * Nick Braeckman
 
 ## Assignment description
-Implement a simple chatsystem with following features:
+Implement a simple chat-system with following features:
 * Server: is responsible for communication between users and keeps track of online users.
 * Client: asks a username on startup. (Duplicate usernames are forbidden and therefore blocked)
 * Private chat: chatting with someone who is online in the room must be possible.
 
 
-## Feautures
+## Features
 ### Private chat
-* sending messages to 1 person at a time only
-* reading all private messages from all people
-* reopen private chat after closing: show missed messages
+* send private messages to 1 person at a time
+* reading all the private messages, coming from all private users
+* show received private messages after reopening the chat system
 ### Public chat
-* click on username to open private chat and send messages to that username
+* click on a username to open the private chat and send messages to that user
 ### Login screen
-* lets user choose
+* choose a username and chat server
 
-## How to run the jars ?
+## Run the chat system
+
+1) Download the jar's
+
+2) Execute the jar's in the following order:
+
+* Server:
+``` java -jar Server.jar <portnumber>```
+
 * Client: 
 ``` java -jar Client.jar```
-* Server:
-``` java -jar Server.jar <portnuber>```
 
 
 
@@ -44,6 +50,6 @@ Implement a simple chatsystem with following features:
 ![Screenshot 4](Screenshots/screen1.png?raw=true "Screenshot 4")
 ![Screenshot 5](Screenshots/screen1.png?raw=true "Screenshot 5")
 
-## Info
+## More Info
 * https://www.javatpoint.com/socket-programming
 * https://docs.oracle.com/javase/tutorial/networking/index.html
