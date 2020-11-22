@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 
 public class ChatApplication extends Application {
     private final Logger logger = Logger.getLogger(ChatApplication.class.getName());
-
     private static Stage publicStage, privateStage;
     private static Scene publicScene;
     private static BorderPane publicBorderPane;
