@@ -2,7 +2,6 @@
 ## Table of contents
 * [Authors](#Authors)
 * [Assignment description](#Assignment-description)
-* [General info](#General-info)
 * [Features](#Features)
 * [Screenshots](#Screenshots)
 * [Info](#Info)
