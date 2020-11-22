@@ -2,7 +2,6 @@
 ## Table of contents
 * [Authors](#Authors)
 * [Assignment description](#Assignment-description)
-* [General info](#General-info)
 * [Features](#Features)
 * [Screenshots](#Screenshots)
 * [Info](#Info)
@@ -64,5 +63,5 @@ Implement a simple chat-system with following features:
 ![Screenshot 5](Screenshots/screen1.png?raw=true "Screenshot 5")
 
 ## More Info
-* https://www.javatpoint.com/socket-programming
-* https://docs.oracle.com/javase/tutorial/networking/index.html
+* [Socket tutorial](https://www.javatpoint.com/socket-programming)
+* [Socket tutorial: Oracle](https://docs.oracle.com/javase/tutorial/networking/index.html)
